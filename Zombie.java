@@ -1,3 +1,10 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.Buffer;
+
+import javax.imageio.ImageIO;
+
 /**
  * Represents a Zombie in the game, defining its movement, attack behavior, and health.
  * Zombies advance towards the player's house and attack plants in their path.
@@ -7,7 +14,7 @@
  * @since 2025-06-27
  */
 
-public class Zombie {
+public class Zombie implements Drawable{
     /** The speed at which the zombie attacks (time between attacks in seconds). */
     private final double ATTACK_SPEED;
 
@@ -31,6 +38,10 @@ public class Zombie {
 
     /** The current lane index (row) the zombie is occupying. */
     private int laneNo;
+
+    private BufferedImage[] attackAnimation;
+
+    private BufferedImage[] movementAnimation;
     
     /**
      * Constructs a new Zombie object.
@@ -47,6 +58,11 @@ public class Zombie {
         timeSinceLastAttack = 0;
         health = 200;
         position = 0; // Starts at the beginning of the tile (right edge)
+
+        if(attackAnimation == null ){
+            loadAnimation();
+            System.out.println("loaded");
+        }
     }
 
     /**
@@ -68,6 +84,7 @@ public class Zombie {
         this.updatePosition(elapsedTime);
         return position >= Tile.getTileLength();
     }
+    
 
     /**
      * Updates the zombie's attack cooldown and checks if it's ready to attack.
@@ -83,6 +100,10 @@ public class Zombie {
             return true;
         }
         return false;
+    }
+
+    public boolean isAlive(){
+        return health >= 0;
     }
     
     /**
@@ -196,6 +217,29 @@ public class Zombie {
      */
     @Override
     public String toString(){
-        return String.format("        Health : %d Speed : %.2f Damage : %d", this.health, this.SPEED, this.DAMAGE );
+        return String.format("       Health : %d Speed : %.2f Damage : %d", this.health, this.SPEED, this.DAMAGE );
+    }
+
+    @Override
+    public BufferedImage[] getAttackAnimation(){
+        return  attackAnimation;
+    }
+
+    @Override
+    public BufferedImage[] getMovementAnimation(){
+        return movementAnimation;
+    }
+
+    @Override 
+    public void loadAnimation(){
+         try{
+         movementAnimation = new BufferedImage[2];
+         movementAnimation[0] =   ImageIO.read(new File("zombie1.png"));
+         movementAnimation[1] =   ImageIO.read(new File("zombie2.png"));
+        
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

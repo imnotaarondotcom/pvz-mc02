@@ -16,7 +16,7 @@ public class Sun {
     private final int LANE_NO;
 
     /** The monetary value of a single sun collectible. This is a constant for all sun. */
-    private static final int VALUE = 25; 
+    private static final int VALUE = 50; 
     
     /**
      * Constructs a new Sun object that spawns naturally on the game board.

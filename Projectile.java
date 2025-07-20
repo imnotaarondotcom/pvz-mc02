@@ -93,6 +93,14 @@ public class Projectile {
         return false;
     }
 
+    public boolean hasHitZombie(Tile t){
+        Zombie zombie = t.highestPosition();
+        if(getPosition() + Tile.getTileLength() - zombie.getPosition() >= Tile.getTileLength()){
+            hit(zombie);
+            return true;
+        }
+        return false;
+    }
     /**
      * Checks if the projectile is currently in the last tile of the game board.
      * @return True if the projectile is in the last tile, false otherwise.
@@ -129,7 +137,7 @@ public class Projectile {
      * Returns the base damage value of the projectile.
      * @return The projectile's base damage.
      */
-    public int getDamage(){
+    public int getDAMAGE(){
         return DAMAGE;
     }
 }

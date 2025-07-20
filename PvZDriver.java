@@ -1,7 +1,3 @@
-import java.util.*;
-import java.time.Duration;
-import java.time.Instant;
-
 /**
  * This class is the main driver for the Plants vs. Zombies simulation game.
  * It initializes the game board, manages the primary game loop, handles the spawning
@@ -12,10 +8,14 @@ import java.time.Instant;
  * @version 1.0
  * @since 2025-06-27
  */
+import java.util.*;
+import javax.swing.*;
+import java.time.Duration;
+import java.time.Instant;
 
 public class PvZDriver {
     /** A shared Random instance for generating random numbers, e.g., for zombie and sun spawning. */
-    private final Random TILEPICKER;
+    private final Random tilePicker;
 
     /** Current game level, influencing zombie spawning. */
     private static int level = 1 ;
@@ -26,16 +26,13 @@ public class PvZDriver {
     /** Maximum number of tiles per lane on the game board. */
     private static final int MAX_TILES = 9;
 
-    /** Maximum number of tiles per lane on the game board. */
-    private static Tile[][] lane;
-
     /**
      * Constructs a new PvZDriver instance.
      * Initializes the random number generator used for various game mechanics.
      */
     public PvZDriver() {
-        this.TILEPICKER = new Random();
-        lane = new Tile[MAX_LANES][MAX_TILES];
+        this.tilePicker = new Random();
+        
     }
 
     /**
@@ -43,13 +40,14 @@ public class PvZDriver {
      * Spawns zombies at the last tile of a randomly chosen lane.
      * @param gameTime The current elapsed game time in seconds.
      * @param lastZombieSpawnTime The game time when a zombie was last spawned.
+     * @param lane The 2D array of Tiles representing the game lanes.
      * @return True if a zombie was spawned, false otherwise.
      */
-    public boolean tryToSpawnZombie(int gameTime, int lastZombieSpawnTime){
+    public boolean tryToSpawn(int gameTime,int lastZombieSpawnTime ,Tile[][] lane){
         int i;
         int laneNo;
         
-        laneNo = TILEPICKER.nextInt(PvZDriver.getMaxLanes()); // Randomly pick a lane for the zombie
+        laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes()); // Randomly pick a lane for the zombie
 
         if(gameTime >= 30 && gameTime <= 80){
             if(gameTime % 10 == 0 && lastZombieSpawnTime != gameTime){
@@ -68,7 +66,7 @@ public class PvZDriver {
             }
         } else if(gameTime > 170 && lastZombieSpawnTime <= 170 ){
             for(i = 0; i < 5 + (PvZDriver.getLevel() - 1) * 2; i++){
-                laneNo = TILEPICKER.nextInt(PvZDriver.getMaxLanes());
+                laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
                 lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 );
             }
             return true;
@@ -81,14 +79,15 @@ public class PvZDriver {
      * Attempts to spawn sun collectibles on random tiles at regular intervals.
      * @param gameTime The current elapsed game time in seconds.
      * @param lastSunSpawnTime The game time when sun was last spawned.
+     * @param lane The 2D array of Tiles representing the game lanes.
      * @return True if sun was spawned, false otherwise.
      */
-    public boolean tryToSpawnSun(int gameTime, int lastSunSpawnTime){
+    public boolean tryToSpawnSun(int gameTime, int lastSunSpawnTime, Tile lane[][]){
         int tileNo;
         int laneNo;
     
-        tileNo = TILEPICKER.nextInt(PvZDriver.getMaxTiles());
-        laneNo = TILEPICKER.nextInt(PvZDriver.getMaxLanes());
+        tileNo = tilePicker.nextInt(PvZDriver.getMaxTiles());
+        laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
 
         if(gameTime % 8 == 0 && lastSunSpawnTime != gameTime){
             Sun newSun = new Sun(laneNo, tileNo);
@@ -102,17 +101,18 @@ public class PvZDriver {
      * Updates the state of the game board, including plant actions, projectile movements,
      * and zombie movements and attacks. Checks for game over conditions.
      * @param gameOver A boolean indicating if the game is already over.
+     * @param lane The 2D array of Tiles representing the game lanes.
      * @param timeElapsed The time elapsed since the last board update.
      * @return True if the game is now over, false otherwise.
      */
-    public boolean updateBoard(boolean gameOver, double timeElapsed){
+    public boolean updateBoard(boolean gameOver, Tile[][] lane, double timeElapsed){
         int laneNo;
         int tileNo;
         int zombieNo;
         Plant plant;
         Tile currentTile;
         Zombie zombie;
-        ArrayList<Zombie> zombies; 
+        ArrayList<Zombie> zombies; // Corrected to ArrayList
         Projectile projectile;
         Iterator<Projectile> iterator;
         ArrayList<Projectile> projectiles;
@@ -140,10 +140,10 @@ public class PvZDriver {
                     
                     if(currentTile.hasZombie()){
                         zombie = currentTile.highestPosition();
-                        if(projectile.getPosition() + Tile.getTileLength() - zombie.getPosition() >= Tile.getTileLength()){
+                        if(projectile.getPosition() + Tile.getTileLength() - zombie.getPosition() >= Tile.getTileLength()){ // checks if projectile can hit zombie
                             projectile.hit(zombie);
                             iterator.remove();
-                            if(zombie.getHealth() <= 0){
+                            if(zombie.getHealth() <= 0){ // remove zombie if dead
                                 currentTile.removeZombie(zombie);
                                 GameClock.printTime();
                                 System.out.printf("Zombie died at lane %d tile %d\n", zombie.getLaneNo() + 1, zombie.getTileNo() + 1);
@@ -239,68 +239,11 @@ public class PvZDriver {
      * @param args Command line arguments (not used).
      */
     public static void main(String[] args){
-        Scanner sc = new Scanner(System.in);
-        int input = 0;
-        double lastBoardUpdate = 0;
-        int lastZombieSpawnTime = 0;
-        int lastSunSpawnTime = 0;
-        double startTime;
-        int i;
-        int tile;         
-        
-        boolean gameOver = false;
-        GameClock clock = new GameClock();
+        Gui gui = new Gui();      
+        Board board = new Board(5,9); // remember to change
+        Controller controller = new Controller(gui, board);
+        controller.start();
 
-        System.out.println("*** PLANTS VS. ZOMBIES *** \nPress 1 To Play");
-        while(input != 1){
-            input = sc.nextInt();
-        }
-
-        GameClock.setTime();
-        PvZDriver driver = new PvZDriver();
-
-        for(i = 0 ; i < MAX_LANES; i++){
-            lane[i] = new Tile[MAX_TILES];
-
-            for(tile = 0; tile < MAX_TILES; tile++){
-                lane[i][tile] = new Tile(i, tile);
-            }
-        }
-        
-        startTime = System.currentTimeMillis();
-        
-        Thread inputThread = new Thread( new PlayerThread(lane));
-        inputThread.setDaemon(true);
-        inputThread.start();
-
-        while(!(gameOver)){
-            long currentTime = System.currentTimeMillis();
-            double timeElapsed = (double)(currentTime - lastBoardUpdate)/1000.0;
-            int gameTime = (int) ((currentTime - startTime) / 1000.0);
-
-            if(driver.tryToSpawnZombie(gameTime, lastZombieSpawnTime)){
-                lastZombieSpawnTime = gameTime;
-            }
-            if(driver.tryToSpawnSun(gameTime, lastSunSpawnTime)){
-                lastSunSpawnTime = gameTime;
-            }
-            
-            gameOver = driver.updateBoard(gameOver, timeElapsed);
-            lastBoardUpdate = currentTime;
-
-            if(gameTime >= 180 && !gameOver){
-                GameClock.printTime();
-                System.out.println("Player Wins");    
-                gameOver = true;
-            } 
-
-            try{ 
-                Thread.sleep(100);
-            } catch(InterruptedException e){
-                Thread.currentThread().interrupt();
-                System.err.println("Game loop interrupted: " + e.getMessage());
-            }
-        }
-        sc.close();
+       
     }
 }

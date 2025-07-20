@@ -18,7 +18,7 @@ public class Sunflower extends Plant {
     private static final double COOLDOWN = 7.5;
 
     /** Timestamp of the last Sunflower planted, for cooldown tracking. */
-    private static double timeSinceLastPlant = -COOLDOWN;
+    private static double timeSinceLastPlant = -7.5;
 
     /**
      * Constructs a Sunflower.
@@ -44,8 +44,8 @@ public class Sunflower extends Plant {
      * Attempts to make the Sunflower produce sun.
      * Produces sun if its internal production cooldown is met.
      * @param t Current tile of the plant.
-     * @param tiles All tiles in the plant's lane.
      * @param elapsedTime Time elapsed since last update.
+     * @param tiles All tiles in the plant's lane (unused for Sunflower's action).
      */
     @Override
     public void tryToAction(Tile t, double elapsedTime, Tile[] tiles){

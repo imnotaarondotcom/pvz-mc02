@@ -43,8 +43,8 @@ public class Peashooter extends Plant {
      * Attempts to make the Peashooter shoot a pea.
      * Fires if lane is not clear (i.e., there is a zombie) and attack cooldown is met.
      * @param t Current tile of the plant.
-     * @param tiles All tiles in the plant's lane.
      * @param elapsedTime Time elapsed since last update.
+     * @param tiles All tiles in the plant's lane.
      */
     @Override
     public void tryToAction(Tile t, double elapsedTime, Tile[] tiles){
