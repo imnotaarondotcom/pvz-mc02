@@ -35,9 +35,10 @@ public class Controller implements ActionListener{
         
         startTime = System.currentTimeMillis();
 
-        gui.setNoLanes(board.getMaxLanes());
-        gui.setNoTiles(board.getMaxTiles());
-        gui.setTileSize();
+       
+        gui.setBoardSize(board.getMaxLanes(), board.getMaxTiles());
+       
+       
         
         Thread inputThread = new Thread( new PlayerThread(board));
         inputThread.setDaemon(true);
@@ -45,10 +46,10 @@ public class Controller implements ActionListener{
 
         
 
-        while(!updateModel()){
+        while(!updateModel()){ 
             gui.setEntities(board.getEntities());
            
-            gui.setx(gui.getx() + 10);
+        
             gui.repaint();
             
         }
@@ -57,7 +58,10 @@ public class Controller implements ActionListener{
 
     
 
-
+    /**updates the entities that are in the board and returns if the game has ended
+     * 
+     * @return - returns 0 if the game has not ended and 1 otherwise
+     */
     public boolean updateModel(){
         boolean gameOver = false;
         long currentTime = System.currentTimeMillis();

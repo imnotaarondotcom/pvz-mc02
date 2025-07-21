@@ -1,3 +1,5 @@
+import java.awt.image.BufferedImage;
+
 /**
  * This class defines the behavior and properties of a Peashooter plant in the game.
  * It is responsible for handling its attack logic, cooldowns, and interactions within the game environment.
@@ -97,4 +99,6 @@ public class Peashooter extends Plant {
     public static void setTimeSinceLastPlant(double time){
         timeSinceLastPlant = time;
     }
+
+    private BufferedImage[] moveAnimation;
 }

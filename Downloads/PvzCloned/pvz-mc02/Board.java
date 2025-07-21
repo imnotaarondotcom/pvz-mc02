@@ -373,6 +373,9 @@ public class Board {
         return entities;
      }
     
+    public Tile getTile(int laneNo, int tileNo){
+        return lane[laneNo][tileNo];
+    }
 
     private int MAX_TILES;
     private int MAX_LANES;

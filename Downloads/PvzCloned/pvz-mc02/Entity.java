@@ -1,12 +1,14 @@
 import java.awt.image.BufferedImage;
 import java.nio.Buffer;
 
-public class Entity {
+public  class Entity {
     private BufferedImage[] moveAnimation;
     private BufferedImage[] attackAnimation;
     private int tileNo;
     private int laneNo;
     private double position;
+
+    
 
     public Entity(BufferedImage[] move,BufferedImage[] atk, int laneNo, int tileNo, double position ){
         this(move, laneNo, tileNo , position);
@@ -30,11 +32,11 @@ public class Entity {
     }
 
     public int getTileNo(){
-        return tileNo;
+        return tileNo ;
     }
 
     public int getLaneNo(){
-        return laneNo;
+        return laneNo ;
     }
 
     public double getPosition(){
