@@ -24,4 +24,20 @@ public class Entity {
     public BufferedImage[] getMovementAnimation(){
         return moveAnimation;
     }
+
+    public BufferedImage[] getAttackAnimation(){
+        return attackAnimation;
+    }
+
+    public int getTileNo(){
+        return tileNo;
+    }
+
+    public int getLaneNo(){
+        return laneNo;
+    }
+
+    public double getPosition(){
+        return position;
+    }
 }

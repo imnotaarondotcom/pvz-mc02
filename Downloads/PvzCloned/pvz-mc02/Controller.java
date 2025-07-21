@@ -34,10 +34,16 @@ public class Controller implements ActionListener{
       
         
         startTime = System.currentTimeMillis();
+
+        gui.setNoLanes(board.getMaxLanes());
+        gui.setNoTiles(board.getMaxTiles());
+        gui.setTileSize();
         
         Thread inputThread = new Thread( new PlayerThread(board));
         inputThread.setDaemon(true);
         inputThread.start();
+
+        
 
         while(!updateModel()){
             gui.setEntities(board.getEntities());

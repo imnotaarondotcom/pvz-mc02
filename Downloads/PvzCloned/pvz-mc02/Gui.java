@@ -2,9 +2,11 @@ import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -18,12 +20,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Gui extends JPanel implements ActionListener {
-    JFrame frame ;
-   
+    
 
     public Gui(){
+        tileImage = new BufferedImage[3];
+
         screenHeight = 1080;
         screenWidth = 1920;
+        
+        
+
+
         frame = new JFrame("Plants Vs Zombies");
         frame.setSize(screenWidth, screenHeight);
    
@@ -35,18 +42,24 @@ public class Gui extends JPanel implements ActionListener {
 
         init();
         frame.add(this);
-        getImage();
+        
         frame.setVisible(true);
+        getImage();
         
     }
 
     public void init(){
      //   frame.setLayout(new GridBagLayout());
         GridBagLayout grid = new GridBagLayout();
-
+        GridBagConstraints constraint = new GridBagConstraints();
+        constraint.gridx = 100;
+        constraint.gridy = 100;
+        grid.addLayoutComponent(frame, constraint);
         JPanel tilePanel = new JPanel(new FlowLayout());
-        
+     
         frame.add(tilePanel, BorderLayout.SOUTH);
+
+        
     }
 
    public void getImage(){
@@ -55,7 +68,7 @@ public class Gui extends JPanel implements ActionListener {
        zom1 = ImageIO.read(new File("zombie1.png"));
        zom2 = ImageIO.read(new File("zombie2.png"));
         pea1 = ImageIO.read(new File("Peashooter1.png"));
-
+        tileImage[0] = ImageIO.read(new File("Grass1.png"));
     }catch(IOException e){
         e.printStackTrace();
     }
@@ -65,16 +78,31 @@ public class Gui extends JPanel implements ActionListener {
     public void paintComponent(Graphics g ){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; 
+        int row = 0;
+        int col = 0;
+
+        for(row = 0;  row < noLanes;  row++){
+            for(col = 0; col < noTiles; col++){
+                g2.drawImage(tileImage[0], col * tileY ,row * tileX , tileY, tileX , null);
+                
+            
+            }
+        }
+
+     
         
+       
+
+
         Entity entity;
         Iterator<Entity> entIterator;
         if(entities != null){
             entIterator = entities.iterator();
 
             while(entIterator.hasNext()){
-                System.out.println("called");
+               
                 entity = entIterator.next();
-                g2.drawImage(entity.getMovementAnimation()[0], x,500,100,200,null);
+                g2.drawImage(entity.getMovementAnimation()[0], tileY * entity.getTileNo(),tileX * entity.getLaneNo(),tileY,tileX,null);
             }
         }
         
@@ -97,13 +125,9 @@ public class Gui extends JPanel implements ActionListener {
     }
     x = 0;
       
-
-    
-
     }
 
-
-/* 
+    /* 
       @Override
     public void run() {
        x = 0;
@@ -121,6 +145,23 @@ public class Gui extends JPanel implements ActionListener {
         
     }
 */
+
+    public void setTileSize(){
+        tileX = screenWidth / noTiles;
+        tileY = screenHeight / noLanes;
+
+        System.out.printf("x %d y %d ", tileX, tileY);
+    }
+
+    public void setNoLanes(int n){
+        noLanes = n;
+    }
+
+    public void setNoTiles(int n){
+        noTiles = n;
+    }
+
+
     public int getx(){
         return x;
     }
@@ -144,11 +185,14 @@ public class Gui extends JPanel implements ActionListener {
     private BufferedImage zom2;
     private ArrayList<Entity> entities;
 
-    private int tileSize; // size of each tile in pixels
-    private int noRows;
-    private int noCols;
+    private int tileX; // size of each tile in pixels
+    private int tileY;
     private int screenWidth;
     private int screenHeight;
+
+    private JFrame frame ;
+    private BufferedImage[] tileImage;
+   
 
 
     @Override
