@@ -210,7 +210,7 @@ public class Zombie {
      * @return True if the zombie is in the last tile, false otherwise.
      */
     public boolean inLastTile(){
-        return tileNo == 0;
+        return tileNo == 0 ;
     }
 
     public String getState(){

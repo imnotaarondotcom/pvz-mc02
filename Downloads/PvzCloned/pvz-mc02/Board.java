@@ -313,8 +313,8 @@ public class Board {
                         }
                     } else { // If no plant, then update position of the zombie
                         if(zombie.isReadyToMove(timeElapsed)){
-                            zombie.move(); // updates tile no of zombie
-                            if(zombie.inLastTile()){
+                            
+                            if(zombie.getTileNo() == 0){ 
                                 GameClock.printTime();
                                 System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
                                 System.out.println("*** GAME OVER | ZOMBIES WIN ***");
@@ -327,7 +327,7 @@ public class Board {
                                 ( tileNo + 1 )+  " has moved to tile " + (tileNo ) );
                                 zombieIterator.remove(); // Remove from current tile
                                 lane[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
-                                
+                                zombie.move(); // updates zombies tile no
                                 
                             }
                             

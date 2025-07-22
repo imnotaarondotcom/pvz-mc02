@@ -149,7 +149,7 @@ public class Gui extends JPanel implements ActionListener {
                     }
                     */
                     g2.drawImage(animation[currentFrame %animation.length ], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                  
+                   
 
                    
                     
