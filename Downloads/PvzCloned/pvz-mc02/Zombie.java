@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
  * @since 2025-06-27
  */
 
-public class Zombie implements Drawable{
+public class Zombie {
     /** The speed at which the zombie attacks (time between attacks in seconds). */
     private final double ATTACK_SPEED;
 
@@ -38,11 +38,12 @@ public class Zombie implements Drawable{
 
     /** The current lane index (row) the zombie is occupying. */
     private int laneNo;
+    // type of zombie
+    private String type;
+    // state the zombie is in (Attacking , Moving)
+    private String state;
 
-    private BufferedImage[] attackAnimation;
 
-    private BufferedImage[] movementAnimation;
-    
     /**
      * Constructs a new Zombie object.
      * Initializes the zombie's stats, health, and starting position.
@@ -58,11 +59,10 @@ public class Zombie implements Drawable{
         timeSinceLastAttack = 0;
         health = 200;
         position = 0; // Starts at the beginning of the tile (right edge)
-
-        if(attackAnimation == null ){
-            loadAnimation();
-            System.out.println("loaded");
-        }
+        
+        type = "zombie";
+        state = "walk";
+       
     }
 
     /**
@@ -70,6 +70,7 @@ public class Zombie implements Drawable{
      * Resets its internal position within the new tile based on any overflow.
      */
     public void move(){
+        state = "walk";
         this.resetPosition(position % Tile.getTileLength()); // Carry over fractional position to next tile
         tileNo = tileNo - 1; // Move to the previous tile (towards the house)
     }
@@ -94,6 +95,7 @@ public class Zombie implements Drawable{
      * @return True if the zombie's attack cooldown has reset and it can perform an attack, false otherwise.
      */
     public boolean isReadyToAttack(double timeElapsed){
+        state = "attacking";
         updateAttackCooldown(timeElapsed);
         if(timeSinceLastAttack > ATTACK_SPEED ){
             resetAttackCooldown(timeSinceLastAttack % ATTACK_SPEED); // Keep any excess time for next cooldown
@@ -125,7 +127,7 @@ public class Zombie implements Drawable{
         health -= damage;
         GameClock.printTime();
         System.out.printf("Zombie at lane %d tile %d hit. Updated health: %d\n",
-                          (laneNo + 1), (tileNo + 1), health);
+                          (laneNo + 1), (tileNo), health);
     }
     
     /**
@@ -211,6 +213,14 @@ public class Zombie implements Drawable{
         return tileNo == 0;
     }
 
+    public String getState(){
+        return state;
+    }
+
+    public String getType(){
+        return type;
+    }
+
     /**
      * Provides a string representation of the zombie's current stats.
      * @return A formatted string showing health, speed, and damage.
@@ -220,26 +230,5 @@ public class Zombie implements Drawable{
         return String.format("       Health : %d Speed : %.2f Damage : %d", this.health, this.SPEED, this.DAMAGE );
     }
 
-    @Override
-    public BufferedImage[] getAttackAnimation(){
-        return  attackAnimation;
-    }
 
-    @Override
-    public BufferedImage[] getMovementAnimation(){
-        return movementAnimation;
-    }
-
-    @Override 
-    public void loadAnimation(){
-         try{
-         movementAnimation = new BufferedImage[2];
-         movementAnimation[0] =   ImageIO.read(new File("zombie1.png"));
-         movementAnimation[1] =   ImageIO.read(new File("zombie2.png"));
-        
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
 }

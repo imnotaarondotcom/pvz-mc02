@@ -2,34 +2,25 @@ import java.awt.image.BufferedImage;
 import java.nio.Buffer;
 
 public  class Entity {
-    private BufferedImage[] moveAnimation;
-    private BufferedImage[] attackAnimation;
+
     private int tileNo;
     private int laneNo;
     private double position;
+    private String type;
+    private String state; 
 
     
 
-    public Entity(BufferedImage[] move,BufferedImage[] atk, int laneNo, int tileNo, double position ){
-        this(move, laneNo, tileNo , position);
-        attackAnimation = atk;
-        
-    }
+   
 
-    public Entity(BufferedImage[] move, int laneNo, int tileNo, double position ){
-        moveAnimation = move;
+    public Entity(String type, String state, int laneNo, int tileNo, double position ){
+        this.type = type;
+        this.state = state;
         this.tileNo = tileNo;
         this.laneNo = laneNo;
         this.position = position;
     }
 
-    public BufferedImage[] getMovementAnimation(){
-        return moveAnimation;
-    }
-
-    public BufferedImage[] getAttackAnimation(){
-        return attackAnimation;
-    }
 
     public int getTileNo(){
         return tileNo ;
@@ -41,5 +32,13 @@ public  class Entity {
 
     public double getPosition(){
         return position;
+    }
+
+    public String getState(){
+        return state;
+    }
+
+    public String getType(){
+        return type;
     }
 }

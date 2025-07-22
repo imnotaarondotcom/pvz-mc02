@@ -313,18 +313,24 @@ public class Board {
                         }
                     } else { // If no plant, then update position of the zombie
                         if(zombie.isReadyToMove(timeElapsed)){
+                            zombie.move(); // updates tile no of zombie
                             if(zombie.inLastTile()){
                                 GameClock.printTime();
                                 System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
                                 System.out.println("*** GAME OVER | ZOMBIES WIN ***");
+                                 System.out.println("tileNo is " + tileNo);
                                 return true;
                             }
-                            zombie.move();
-                            zombieIterator.remove(); // Remove from current tile
-                            lane[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
-                            GameClock.printTime();
-                            System.out.println("Zombie from lane " + (laneNo + 1 ) + " Tile "  +
+                            else{
+                                GameClock.printTime();
+                                System.out.println("Zombie from lane " + (laneNo + 1 ) + " Tile "  +
                                 ( tileNo + 1 )+  " has moved to tile " + (tileNo ) );
+                                zombieIterator.remove(); // Remove from current tile
+                                lane[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
+                                
+                                
+                            }
+                            
                         } 
                         if(!zombie.isAlive()){
                             zombieIterator.remove();
@@ -355,17 +361,25 @@ public class Board {
         Entity tempEntity;
         Zombie zombie;
         Iterator<Zombie> zIterator;
+        Plant plant;
         int row = 0;
         int col = 0;
 
         for(row = 0; row < getMaxLanes(); row++){
             for(col = 0; col < getMaxTiles(); col++){
                 zIterator = lane[row][col].getZombies().iterator();
+                plant = lane[row][col].getPlant();
 
                 while(zIterator.hasNext()) {   // iterator for each zombie
                     zombie = zIterator.next();  
-                    tempEntity = new Entity(zombie.getMovementAnimation(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
+                    tempEntity = new Entity(zombie.getType(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
                     entities.add(tempEntity);
+                    
+                }
+                if(plant != null){
+                    tempEntity = new Entity(plant.getName(), plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
+                    entities.add(tempEntity);
+                   // System.out.println(plant.getName() + plant.getState());
                 }
             }
         }

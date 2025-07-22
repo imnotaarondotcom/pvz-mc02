@@ -8,7 +8,7 @@
  * @since 2025-06-27
  */
 public abstract class Plant {
-    /** The name of the plant. */
+    /** The type of the plant. */
     protected final String NAME;
 
     /** The speed attribute of the plant (e.g., attack speed, production rate). */
@@ -25,6 +25,10 @@ public abstract class Plant {
     
     /** Tracks the time elapsed since the plant's last action/attack. */
     protected double timeSinceLastAttack = 0;
+
+    protected String state;
+    // what part of the tile plant is placed
+    private double position;
     
     /**
      * Constructs a new Plant object.
@@ -40,6 +44,8 @@ public abstract class Plant {
         health = h;
         LANE_NO = lane;
         TILE_NO = tile;
+        state = "idle";
+        position = 0;
     }
 
     /**
@@ -113,11 +119,23 @@ public abstract class Plant {
         return LANE_NO;
     }
 
+    public double getPosition(){
+        return position;
+    }
+
     /**
      * Returns the tile number the plant occupies.
      * @return The plant's tile number.
      */
     public int getTileNo(){
         return TILE_NO;
+    }
+
+    public void updateState(String state){
+        this.state = state;
+    }
+
+    public String getState(){
+        return state;
     }
 }

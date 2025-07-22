@@ -242,8 +242,8 @@ public class PvZDriver {
         Gui gui = new Gui();      
         Board board = new Board(5,9); // remember to change
         Controller controller = new Controller(gui, board);
-        board.getTile(3,8).spawnZombie(3,8);
-        board.getTile(4,8).spawnZombie(4,8);
+      //  board.getTile(3,8).spawnZombie(3,9);
+      //  board.getTile(4,8).spawnZombie(4,9);
         controller.start();
 
        

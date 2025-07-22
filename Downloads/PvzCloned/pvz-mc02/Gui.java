@@ -23,10 +23,37 @@ public class Gui extends JPanel implements ActionListener {
     
 
     public Gui(){
+        init();
+        
+      
+        
+    }
+
+    public void init(){
+     /*  frame.setLayout(new GridBagLayout());
+        
+        GridBagLayout grid = new GridBagLayout();
+        GridBagConstraints constraint = new GridBagConstraints();
+        constraint.gridx = 100;
+        constraint.gridy = 100;
+        grid.addLayoutComponent(frame, constraint);
+        JPanel tilePanel = new JPanel(new FlowLayout());
+        
+        tilePanel.setBackground( Color.blue);
+      frame.add(tilePanel, BorderLayout.SOUTH); */
+        animations = new AnimationManager();
+        animations.loadTile("Grass", 2);
+        animations.loadAnimation("zombie", "walk", 2);
+        animations.loadAnimation("peashooter", "idle", 4);
+
+
         tileImage = new BufferedImage[3];
         topPanelHeight = 200;
         screenHeight = 1080 ;
         screenWidth = 1920;
+
+        frameCount = 0;
+        currentFrame = 0;
         
      
 
@@ -44,35 +71,17 @@ public class Gui extends JPanel implements ActionListener {
 
        this.setLayout(new BorderLayout());
 
-        init();
+      
         frame.add(topPanel, BorderLayout.NORTH);
         this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
         frame.add(this, BorderLayout.CENTER );
         
       
         frame.setVisible(true);
-        getImage();
+    
 
-      
-        
     }
-
-    public void init(){
-     //   frame.setLayout(new GridBagLayout());
-        
-        GridBagLayout grid = new GridBagLayout();
-        GridBagConstraints constraint = new GridBagConstraints();
-        constraint.gridx = 100;
-        constraint.gridy = 100;
-        grid.addLayoutComponent(frame, constraint);
-        JPanel tilePanel = new JPanel(new FlowLayout());
-        
-        tilePanel.setBackground( Color.blue);
-       // frame.add(tilePanel, BorderLayout.SOUTH);
-       
-        
-    }
-
+/* 
    public void getImage(){
     try{
      
@@ -84,12 +93,13 @@ public class Gui extends JPanel implements ActionListener {
     }catch(IOException e){
         e.printStackTrace();
     }
-    
-   }
+  
+   } */ 
     @Override
     public void paintComponent(Graphics g ){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; 
+        BufferedImage[] tiles;
         int row = 0;
         int col = 0;
         int x = 0;
@@ -97,11 +107,17 @@ public class Gui extends JPanel implements ActionListener {
 
         for(row = 0;  row < noLanes;  row++){
             for(col = 0; col < noTiles; col++){
-                //g2.drawImage(tileImage[0], col * tileX, row * tileY, tileX, tileY , null);
-                g2.drawImage(tileImage[0], col * tileX, row * tileY, tileX, tileY , null);
-                if((col + row) % 2 == 0){
-                    g2.drawImage(tileImage[1], col * tileX, row * tileY, tileX, tileY , null);
+                 tiles = animations.getTiles("Grass");  
+                if(tiles != null){
+                  
+
+                    
+                    g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
+                    if((col + row) % 2 == 0){
+                      g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
                 }
+                }
+                
                 
             
             }
@@ -111,7 +127,7 @@ public class Gui extends JPanel implements ActionListener {
         Iterator<Entity> entIterator;
         if(entities != null){
             entIterator = entities.iterator();
-
+            BufferedImage[] animation;
             toggle = !(toggle);
             while(entIterator.hasNext()){
                
@@ -119,31 +135,50 @@ public class Gui extends JPanel implements ActionListener {
                 x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo();
 
-                if(toggle){
-                    g2.drawImage(entity.getMovementAnimation()[0], x, y,tileX,tileY ,null);
+
+                   // g2.drawImage(entity.getMovementAnimation()[0], x, y,(int)(tileX * 1.5),(int)(tileY * 1.5) ,null);
+                    animation = animations.getAnimation(entity.getType(), entity.getState());
+                    
+                if(animation != null){/* 
+                    if(toggle){
+                        g2.drawImage(animation[0], x, y,(int)(tileX ),(int)(tileY ) ,null);
+                        
+                    }
+                    else{
+                    g2.drawImage(animation[1], x, y,(int)(tileX ),(int)(tileY ) ,null);
+                    }
+                    */
+                    g2.drawImage(animation[currentFrame %animation.length ], x, y,(int)(tileX ),(int)(tileY ) ,null);
+                  
 
                    
+                    
                 }
                 else{
-                     g2.drawImage(entity.getMovementAnimation()[1], x, y,tileX,tileY ,null);
-
+                    System.out.println("notfound");
                 }
                 
+                
+
+                 
+
             }
         }
-        
+
+         if(frameCount >= 3){
+            frameCount = 0;
+            currentFrame++;
+        }
+        if(currentFrame >=1000){
+            currentFrame = 0;
+        }
+          frameCount++;
         
        // g2.setColor(Color.blue);
 
         
       
-      
-    while(x <= 1000){
-    g2.drawImage(pea1, x,200,100,100,null);
-    x += 100;
-    }
-    x = 0;
-      
+  
     }
 
     /* 
@@ -233,8 +268,11 @@ public class Gui extends JPanel implements ActionListener {
 
     private JFrame frame ;
     private BufferedImage[] tileImage;
-   
 
+    private int frameCount;
+    private int currentFrame;
+   
+    private AnimationManager animations;
 
     @Override
     public void actionPerformed(ActionEvent e) {

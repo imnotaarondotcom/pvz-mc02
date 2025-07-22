@@ -35,10 +35,11 @@ public class Peashooter extends Plant {
      */
     public Peashooter(int l, int t){
         // Calls superclass constructor (Plant's name, speed, health, lane, tile)
-        super("Peashooter", 1.425, 300, l ,t);
+        super("peashooter", 1.425, 300, l ,t);
         DAMAGE = 20;
         DIRECTDAMAGE = 10;
         DAMAGEFALLOFF = 1;
+        updateState("idle");
     }
 
     /**
@@ -66,6 +67,7 @@ public class Peashooter extends Plant {
     @Override
     public void action(Tile t){
         t.placeProjectile(new Projectile(LANE_NO, TILE_NO, DAMAGE, DAMAGEFALLOFF, DIRECTDAMAGE));
+        updateState("idle"); // peashooter doesnt have an action animation
     }
 
     /**
@@ -100,5 +102,4 @@ public class Peashooter extends Plant {
         timeSinceLastPlant = time;
     }
 
-    private BufferedImage[] moveAnimation;
 }
