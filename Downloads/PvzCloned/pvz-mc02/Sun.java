@@ -1,3 +1,5 @@
+import javax.print.attribute.standard.MediaSize.NA;
+
 /**
  * Represents a Sun collectible in the game. Sun can be naturally spawned on the board
  * or produced by certain plants (e.g., Sunflowers). Collecting sun provides currency
@@ -12,6 +14,12 @@ public class Sun {
     /** The tile number (column) where the sun is located. */
     private final int TILE_NO;
 
+    private final String NAME;
+
+    private String state;
+
+    private double position;
+
     /** The lane number (row) where the sun is located. */
     private final int LANE_NO;
 
@@ -25,6 +33,9 @@ public class Sun {
      * @param t The tile index (column) where the sun will be spawned.
      */
     public Sun(int l, int t){
+        position = 0;
+        NAME = "sun";
+        state = "idle";
         TILE_NO = t;
         LANE_NO = l;
         GameClock.printTime();
@@ -40,6 +51,9 @@ public class Sun {
      * @param p The {@link Plant} object that produced this sun.
      */
     public Sun(int l, int t, Plant p){
+        position = 0;
+        NAME = "sun";
+        state = "idle";
         TILE_NO = t;
         LANE_NO = l;
         GameClock.printTime();
@@ -52,5 +66,25 @@ public class Sun {
      */
     public static int getValue(){
         return VALUE;
+    }
+
+    public String getName(){
+        return NAME;
+    }
+
+    public String getState(){
+        return state;
+    }
+
+    public int getLaneNo(){
+        return LANE_NO;
+    }
+
+    public int getTileNo(){
+        return TILE_NO;
+    }
+
+    public double getPosition(){
+        return position;
     }
 }

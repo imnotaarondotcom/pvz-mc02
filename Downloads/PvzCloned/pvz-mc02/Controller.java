@@ -11,12 +11,13 @@ import java.util.Scanner;
 public class Controller  extends MouseAdapter{
     
     public Controller(Gui g , Board b){
-        player = new Player();
+        player = new Player(b);
         gui = g;
         board = b;
         addMouseListener();
     }
 
+    // anonymous method
     public void addMouseListener(){
         // anonymous class for selection panel
         MouseAdapter selection = new MouseAdapter() {
@@ -24,7 +25,7 @@ public class Controller  extends MouseAdapter{
             @Override
             public void mousePressed(MouseEvent e){
                 System.out.printf(" Selectors tap Border %d\n",  (int) e.getX() / (gui.getScreenWidth() / gui.getNoBorders()) + 1);
-
+                plantNo = (int) e.getX() / (gui.getScreenWidth() / gui.getNoBorders()); 
                 
             }
         };
@@ -35,18 +36,20 @@ public class Controller  extends MouseAdapter{
 
        @Override
     public void mousePressed(MouseEvent e){
+        int laneNo = (int) e.getY()  / gui.getTileY();
+        int tileNo = (int) e.getX() / gui.getTileX() ;
+        
 
-        int tileSizeX = gui.getX();
-        int tileSizeY = gui.getY();
-
-        if(player.getTotalSun() >= 100){
-            int laneNo = (int) e.getY()  / gui.getTileY();
-            int tileNo = (int) e.getX() / gui.getTileX() ;
+       
             
-            board.getTile(laneNo,tileNo).placePlant(new Peashooter(laneNo, tileNo));
-        }
+            player.tryToplacePlant(plantNo, laneNo, tileNo);
+            //board.getTile(laneNo,tileNo).placePlant(new Peashooter(laneNo, tileNo));
+        
 
         System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
+
+        player.collectSun(board.getTile(laneNo, tileNo).getSunList());
+        
     }
 
     
@@ -129,10 +132,10 @@ public class Controller  extends MouseAdapter{
     private Player player;
     private Gui gui;
     private Board board;
-    double lastBoardUpdate;
-    int lastZombieSpawnTime;
-    int lastSunSpawnTime;
-    double startTime; 
-
+    private double lastBoardUpdate;
+    private int lastZombieSpawnTime;
+    private int lastSunSpawnTime;
+    private double startTime; 
+    private int plantNo; // selection panels plant number
      
     }

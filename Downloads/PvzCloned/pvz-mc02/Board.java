@@ -358,6 +358,8 @@ public class Board {
 
     public ArrayList<Entity> getEntities(){
         ArrayList<Entity> entities = new ArrayList<Entity>();
+        Iterator<Sun> sIterator;
+        Sun sun;
         Entity tempEntity;
         Zombie zombie;
         Iterator<Zombie> zIterator;
@@ -371,6 +373,7 @@ public class Board {
             {
                 zIterator = lane[row][col].getZombies().iterator();
                 plant = lane[row][col].getPlant();
+                sIterator = lane[row][col].getSunList().iterator();
 
                 while(zIterator.hasNext()) {   // iterator for each zombie
                     zombie = zIterator.next();  
@@ -382,6 +385,12 @@ public class Board {
                     tempEntity = new Entity(plant.getName(), plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
                     entities.add(tempEntity);
                    // System.out.println(plant.getName() + plant.getState());
+                }
+
+                while(sIterator.hasNext()){
+                    sun = sIterator.next();
+                    tempEntity = new Entity(sun.getName(), sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition());
+                    entities.add(tempEntity);
                 }
             }
         }

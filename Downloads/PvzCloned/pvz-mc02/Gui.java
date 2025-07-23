@@ -36,7 +36,7 @@ public class Gui extends JPanel  {
         animations.loadImages("environment", "Grass", 2);
         animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
         animations.loadAnimation("peashooter", "peashooter_idle", 7);
-
+        animations.loadAnimation("icons", "sun_idle", 1);
 
         noBorders = 6;
 

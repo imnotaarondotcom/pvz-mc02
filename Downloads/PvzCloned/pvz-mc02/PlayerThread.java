@@ -133,7 +133,7 @@ public class PlayerThread implements Runnable {
     }
 
     
-    // The commented out method 'placePlant()' was removed as it was empty and not used.
+    
 
     /**
      * Collects all sun objects from a given list and adds their value to the total sun.
