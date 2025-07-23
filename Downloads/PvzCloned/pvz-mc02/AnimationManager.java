@@ -18,63 +18,88 @@ public class AnimationManager {
 
     /**
      * Loads an animation 
-     * @param path  -  name of directory path 
+     * @param path  -  name of directory path
      * @param animation - name of animation 
      * @param frameCount - no of frames aniamtion has
      */
-    public void loadAnimation(String path, String animation, int frameCount){
+    public void loadAnimation(String path, String animation, int frameCount)
+    {
         BufferedImage[] sprite = new BufferedImage[frameCount];
-        String fileKey = path.concat("_").concat(animation);
+        String fileKey = animation;
+
         String filePath;
         int i = 0;
-        for(i = 0; i < frameCount; i++){
-            filePath = path.concat("_").concat(animation).concat(Integer.toString(i + 1)).concat(".png");
+        for(i = 0; i < frameCount; i++)
+        {
+            filePath = path + "/" + animation + (i + 1) + ".png";
+            File file = new File(filePath);
 
-            try{
-                sprite[i] = ImageIO.read(new File(filePath));
-            }catch(IOException e){
-                e.printStackTrace();
+            if (!file.exists())
+            {
+                System.err.println("File does not exist: " + file.getAbsolutePath());
+                continue;
             }
-            
+
+            try 
+            {
+                sprite[i] = ImageIO.read(file);
+            } 
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }  
         } 
-       // System.out.println("path is \n\n\n" + fileKey);
-        sprites.put(fileKey, sprite );
+        sprites.put(fileKey, sprite);
     }
 
     /**
-     * Loads the images associated with file name
-     * @param fileName -  name of directory path 
+     * Loads the tile images
+     * @param path -  name of directory path
+     * @param fileName - name of file
      * @param noImages - number of tiles to load
      */
-    public void loadImages(String fileName, int noImages){
+    public void loadImages(String path, String fileName, int noImages)
+    {
         BufferedImage[] tileType = new BufferedImage[noImages];
-        int i = 0;
-        for(i =0 ; i < noImages; i++){
-            String filePath = fileName.concat(Integer.toString(i + 1)).concat(".png");
-            try{
-                tileType[i] = ImageIO.read(new File(filePath));
-            }catch(IOException e){
-                e.printStackTrace();
-            }
+        String filePath;
 
-        }
-        
+        int i = 0;
+        for(i =0 ; i < noImages; i++)
+        {
+            filePath = path + "/" + fileName + (i + 1) + ".png";
+            File file = new File(filePath);
+
+            if (!file.exists())
+            {
+                System.err.println("File does not exist: " + file.getAbsolutePath());
+                continue;
+            }
+            try 
+            {
+                tileType[i] = ImageIO.read(file);
+            } 
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }  
+        }  
         tiles.put(fileName, tileType);
     }
-
-    
     /**
      * 
      * @param entity
      * @param animation
      * @return
      */
-    public BufferedImage[] getAnimation(String entity, String animation){
+    public BufferedImage[] getAnimation(String entity, String animation)
+    {
         String fileKey = entity.concat("_").concat(animation);
-        if(sprites.containsKey(fileKey)){
+        if(sprites.containsKey(fileKey))
+        {
             return sprites.get(fileKey);
         }
-        else{
+        else
+        {
             System.out.println(fileKey + " not Found");
             return null;
         }
@@ -86,22 +111,18 @@ public class AnimationManager {
      * @param imageName - file name of image to get
      * @return - returns images assoicaited with imageName
      */
+    public BufferedImage[] getImages(String tileType)
+    {
 
-    public BufferedImage[] getImages(String imageName){
-
-        if(tiles.containsKey(imageName)){
-           
-             return tiles.get(imageName);
-              
-
+        if(tiles.containsKey(tileType))
+        {  
+             return tiles.get(tileType);
         }
-        else{
-            System.out.println("Image " + imageName + "not found\n");
+        else
+        {
+            System.out.println("Image " + tileType + "not found\n");
             return null;
         }
        
     }
-
-   
-    
 }

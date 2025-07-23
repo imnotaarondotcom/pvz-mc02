@@ -53,7 +53,7 @@ public class PlayerThread implements Runnable {
                 if(totalSun >= Peashooter.getCost()){ // Check if player has enough sun
                     // Check if Peashooter is off cooldown for planting
                     if(currentTime - Peashooter.getTimeSinceLastPlant() >= Peashooter.getCooldown()){
-                        userTile = getTileToPlace(); // No parameters needed anymore, scanner is a field
+                        userTile = getTileToPlace(); 
                         if(userTile != null && userTile.getPlant() == null){ // Check if tile is valid and empty
                             // Place new Peashooter and update game state
                             userTile.placePlant(new Peashooter(userTile.getLaneNo(), userTile.getTileNo()));
@@ -150,5 +150,9 @@ public class PlayerThread implements Runnable {
             }
         }
         return collectedSun; // Return sun collected in this specific call
+    }
+
+    public int getTotalSun(){
+        return totalSun;
     }
 }

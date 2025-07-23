@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,20 +11,40 @@ import java.util.Scanner;
 public class Controller  extends MouseAdapter{
     
     public Controller(Gui g , Board b){
+        player = new Player();
         gui = g;
         board = b;
         addMouseListener();
     }
 
     public void addMouseListener(){
-        gui.setMouseListener(this);
+        // anonymous class for selection panel
+        MouseAdapter selection = new MouseAdapter() {
+                
+            @Override
+            public void mousePressed(MouseEvent e){
+                System.out.printf(" Selectors tap Border %d\n",  (int) e.getX() / (gui.getScreenWidth() / gui.getNoBorders()) + 1);
+
+                
+            }
+        };
+        
+        
+        gui.setMouseListener(this , selection);
     }
 
-    @Override
+       @Override
     public void mousePressed(MouseEvent e){
 
         int tileSizeX = gui.getX();
         int tileSizeY = gui.getY();
+
+        if(player.getTotalSun() >= 100){
+            int laneNo = (int) e.getY()  / gui.getTileY();
+            int tileNo = (int) e.getX() / gui.getTileX() ;
+            
+            board.getTile(laneNo,tileNo).placePlant(new Peashooter(laneNo, tileNo));
+        }
 
         System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
     }
@@ -104,12 +125,8 @@ public class Controller  extends MouseAdapter{
         }
 
 
-        @Override
-    public void actionPerformed(ActionEvent e) {
 
-    }
-
-
+    private Player player;
     private Gui gui;
     private Board board;
     double lastBoardUpdate;

@@ -365,8 +365,10 @@ public class Board {
         int row = 0;
         int col = 0;
 
-        for(row = 0; row < getMaxLanes(); row++){
-            for(col = 0; col < getMaxTiles(); col++){
+        for(row = 0; row < getMaxLanes(); row++)
+        {
+            for(col = 0; col < getMaxTiles(); col++)
+            {
                 zIterator = lane[row][col].getZombies().iterator();
                 plant = lane[row][col].getPlant();
 

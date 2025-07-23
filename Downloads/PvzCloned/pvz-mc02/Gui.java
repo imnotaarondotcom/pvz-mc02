@@ -24,21 +24,21 @@ import java.util.Iterator;
 public class Gui extends JPanel  {
     
 
-    public Gui(){
+    public Gui()
+    {
         init();
-        
-      
-        
     }
 
-    public void init(){
-   
-        animations = new AnimationManager();
-        animations.loadImages("Grass", 2);
-        animations.loadAnimation("zombie", "walk", 2);
-        animations.loadAnimation("peashooter", "idle", 4);
-        animations.loadImages("sunBox", 1);
 
+    public void init()
+    {
+        animations = new AnimationManager();
+        animations.loadImages("environment", "Grass", 2);
+        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
+        animations.loadAnimation("peashooter", "peashooter_idle", 7);
+
+
+        noBorders = 6;
 
         topPanelHeight = 200;
         screenHeight = 1080 ;
@@ -59,7 +59,7 @@ public class Gui extends JPanel  {
 
 
         // creates the panel above the board
-        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight);
+        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
        
         frame.add(topPanel);
 
@@ -76,9 +76,9 @@ public class Gui extends JPanel  {
 
 
      
-    public void setMouseListener(MouseListener listener){
-        this.addMouseListener(listener);
-        topPanel.addMouseListener(listener);
+    public void setMouseListener(MouseListener board, MouseListener selection){
+        this.addMouseListener(board);
+        topPanel.addMouseListener(selection);
     }
 
     
@@ -87,7 +87,8 @@ public class Gui extends JPanel  {
     }
 
     @Override
-    public void paintComponent(Graphics g ){
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; 
         BufferedImage[] tiles;
@@ -104,59 +105,43 @@ public class Gui extends JPanel  {
 
                     
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
-                    if((col + row) % 2 == 0){
+
+                    if((col + row) % 2 == 0)
+                    {
                       g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
+                    }
                 }
-                }
-                
-                
-            
             }
         }
 
         Entity entity;
         Iterator<Entity> entIterator;
-        if(entities != null){
+        if(entities != null)
+        {
             entIterator = entities.iterator();
             BufferedImage[] animation;
             toggle = !(toggle);
-            while(entIterator.hasNext()){
-               
+            while(entIterator.hasNext())
+            {
                 entity = entIterator.next();
                 x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo();
 
-
-                   // g2.drawImage(entity.getMovementAnimation()[0], x, y,(int)(tileX * 1.5),(int)(tileY * 1.5) ,null);
-                    animation = animations.getAnimation(entity.getType(), entity.getState());
+                animation = animations.getAnimation(entity.getType(), entity.getState());
                     
-                if(animation != null){/* 
-                    if(toggle){
-                        g2.drawImage(animation[0], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                        
-                    }
-                    else{
-                    g2.drawImage(animation[1], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                    }
-                    */
-                    g2.drawImage(animation[currentFrame %animation.length ], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                   
-
-                   
-                    
+                if (animation != null)
+                {
+                    g2.drawImage(animation[currentFrame % animation.length ], x, y, (int)(tileX), (int)(tileY), null);          
                 }
-                else{
-                    System.out.println("notfound");
+                else
+                {
+                    System.out.println("Animation not found.");
                 }
-                
-                
-
-                 
-
             }
         }
 
-         if(frameCount >= 3){
+        if(frameCount >= 3)
+        {
             frameCount = 0;
             currentFrame++;
         }
@@ -164,34 +149,10 @@ public class Gui extends JPanel  {
             currentFrame = 0;
         }
           frameCount++;
-        
-       // g2.setColor(Color.blue);
-
-        
-      
-  
     }
 
-    /* 
-      @Override
-    public void run() {
-       x = 0;
-        while(true){
-            repaint();
-            toggle = !(toggle);
-            x+= 10;
-
-            try{
-                Thread.sleep(1000);
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-        
-    }
-*/
-
-    public void setBoardSize(int l, int t){
+    public void setBoardSize(int l, int t)
+    {
 
         setNoLanes(l);
         setNoTiles(t);
@@ -202,25 +163,27 @@ public class Gui extends JPanel  {
         setTileSize();
     }
 
-    public void setTileSize(){
-        
+    public void setTileSize()
+    {
         tileX = boardWidth / noTiles;
         tileY = boardHeight / noLanes;
 
         System.out.printf("x %d y %d ", tileX, tileY);
 
 
-          System.out.printf("Grid: %dx%d tiles | Tile size: %dx%d | Panel size: %dx%d%n",
-    noTiles, noLanes, 
-    tileX, tileY,
-    getWidth(), getHeight());
+        System.out.printf("Grid: %dx%d tiles | Tile size: %dx%d | Panel size: %dx%d%n",
+                            noTiles, noLanes, 
+                            tileX, tileY,
+                            getWidth(), getHeight());
     }
 
-    public void setNoLanes(int n){
+    public void setNoLanes(int n)
+    {
         noLanes = n;
     }
 
-    public void setNoTiles(int n){
+    public void setNoTiles(int n)
+    {
         noTiles = n;
     }
 
@@ -232,8 +195,21 @@ public class Gui extends JPanel  {
         return tileY;
     }
 
-    public void setEntities(ArrayList<Entity> e){
+    public void setEntities(ArrayList<Entity> e)
+    {
         entities = e;
+    }
+
+    public int getNoBorders(){
+        return noBorders;
+    }
+
+    public int getScreenWidth(){
+        return screenWidth;
+    }
+
+    public int getScreenHeight(){
+        return screenHeight;
     }
 
     private int x;
@@ -242,9 +218,7 @@ public class Gui extends JPanel  {
     private int noTiles;
     private int noLanes;
 
-    private BufferedImage pea1;
-    private BufferedImage zom1;
-    private BufferedImage zom2;
+    
     private ArrayList<Entity> entities;
 
     private int tileX; // size of each tile in pixels
@@ -265,11 +239,7 @@ public class Gui extends JPanel  {
     private AnimationManager animations;
 
     private PlantSelectionPanel topPanel;
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
-    }
+    private int noBorders;
+  
   
 }
