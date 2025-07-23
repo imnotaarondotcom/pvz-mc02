@@ -31,8 +31,52 @@ public class Gui extends JPanel implements ActionListener {
     {
         animations = new AnimationManager();
         animations.loadTile("environment", "Grass", 2);
-        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
 
+        // Normal Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombie_walkB", 7);
+        animations.loadAnimation("zombie_walk", "zombie_walkC", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombie_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombie_eatB", 7);
+        animations.loadAnimation("zombie_eat", "zombie_eatC", 5);
+
+        // Conehead Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombiecone_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombiecone_walkB", 7);
+        animations.loadAnimation("zombie_walk", "zombiecone_walkC", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombiecone_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombiecone_eatB", 7);
+        animations.loadAnimation("zombie_eat", "zombiecone_eatC", 7);
+
+        // Flag Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombieflag_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombieflag_walkB", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombieflag_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombieflag_eatB", 7);
+
+        // Zombie die animation (NOT IMPLEMENTED YET, IDK IF WE SHOULD)
+        animations.loadAnimation("zombie_die", "zombie_die", 6);
+
+        // Peashooter idle animation
+        animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
+
+        // Sunflower idle animation
+        animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
+
+        // Pea (projectile) idle (just one frame)
+        animations.loadAnimation("plants/peashooter", "pea_idle", 1);
+
+        // Pea hit animation
+        animations.loadAnimation("plants/peashooter", "pea_hit", 2);
 
         tileImage = new BufferedImage[3];
         topPanelHeight = 200;
@@ -41,8 +85,6 @@ public class Gui extends JPanel implements ActionListener {
 
         frameCount = 0;
         currentFrame = 0;
-        
-     
 
         frame = new JFrame("Plants Vs Zombies");
         frame.setSize(screenWidth, screenHeight);
@@ -50,14 +92,13 @@ public class Gui extends JPanel implements ActionListener {
         setBackground(Color.black);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
-        frame.setResizable(false);   
+        frame.setResizable(true);   
       
         
        JPanel topPanel = new JPanel(new BorderLayout());
-       topPanel.setPreferredSize(new Dimension(100,topPanelHeight));
+       topPanel.setPreferredSize(new Dimension(100, topPanelHeight));
 
-       this.setLayout(new BorderLayout());
-
+        this.setLayout(new BorderLayout());
       
         frame.add(topPanel, BorderLayout.NORTH);
         this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
@@ -85,6 +126,13 @@ public class Gui extends JPanel implements ActionListener {
                 tiles = animations.getTiles("Grass");  
                 if(tiles != null)
                 {
+                    /* drawImage parameters
+                        tiles[0]: image to be drawn
+                        col * tileX: x coordinate of top left corner of image
+                        row * tileY: y coordinate of top right corner of image
+                        tileX, tileY: width and height of image
+                        null: image observer
+                    */
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
 
                     if((col + row) % 2 == 0)
@@ -108,10 +156,11 @@ public class Gui extends JPanel implements ActionListener {
                 x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo();
 
-                animation = animations.getAnimation(entity.getType(), entity.getState());
+                animation = animations.getAnimation(entity.getType(), entity.getModifier(), entity.getState());
                     
                 if (animation != null)
                 {
+                    
                     g2.drawImage(animation[currentFrame % animation.length ], x, y, (int)(tileX), (int)(tileY), null);          
                 }
                 else

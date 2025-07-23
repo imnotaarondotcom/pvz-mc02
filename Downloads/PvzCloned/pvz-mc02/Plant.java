@@ -44,7 +44,7 @@ public abstract class Plant {
         health = h;
         LANE_NO = lane;
         TILE_NO = tile;
-        state = "idle";
+        state = "idle"; // default state
         position = 0;
     }
 

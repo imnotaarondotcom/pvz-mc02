@@ -66,8 +66,8 @@ public class Peashooter extends Plant {
      */
     @Override
     public void action(Tile t){
+        updateState("idle"); // peashooter has no attack animation
         t.placeProjectile(new Projectile(LANE_NO, TILE_NO, DAMAGE, DAMAGEFALLOFF, DIRECTDAMAGE));
-        updateState("idle"); // peashooter doesnt have an action animation
     }
 
     /**

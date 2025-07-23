@@ -49,23 +49,35 @@ public class PlayerThread implements Runnable {
             // Get current game time in seconds
             double currentTime = System.currentTimeMillis() / 1000.0; // Use 1000.0 for double division
 
-            if(userInput == 1){ // Player wants to place a Peashooter
-                if(totalSun >= Peashooter.getCost()){ // Check if player has enough sun
+            if(userInput == 1)  // Player wants to place a Peashooter
+            { 
+                if(totalSun >= Peashooter.getCost()) // Check if player has enough sun
+                { 
                     // Check if Peashooter is off cooldown for planting
-                    if(currentTime - Peashooter.getTimeSinceLastPlant() >= Peashooter.getCooldown()){
-                        userTile = getTileToPlace(); // No parameters needed anymore, scanner is a field
-                        if(userTile != null && userTile.getPlant() == null){ // Check if tile is valid and empty
+                    if(currentTime - Peashooter.getTimeSinceLastPlant() >= Peashooter.getCooldown())
+                    {
+                        userTile = getTileToPlace(); 
+
+                        // Check if tile is valid and empty
+                        if(userTile != null && userTile.getPlant() == null)
+                        { 
                             // Place new Peashooter and update game state
                             userTile.placePlant(new Peashooter(userTile.getLaneNo(), userTile.getTileNo()));
                             totalSun -= Peashooter.getCost();
                             Peashooter.setTimeSinceLastPlant(currentTime); // Reset Peashooter's planting cooldown
-                        } else if (userTile != null) {
+                        } 
+                        else if (userTile != null) 
+                        {
                             System.out.println("Tile is occupied!");
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         System.out.println("Still in cooldown!");
                     }
-                } else {
+                } 
+                else 
+                {
                     System.out.println("Not enough sun!");
                 }
             } else if(userInput == 2){ // Player wants to place a Sunflower

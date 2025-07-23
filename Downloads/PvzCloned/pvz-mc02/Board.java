@@ -55,18 +55,18 @@ public class Board {
             }
         } else if(gameTime >= 81 && gameTime <= 140 ){
             if(gameTime % 5 == 0 && lastZombieSpawnTime != gameTime){
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1 );
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1);
                 return true;
             }
         } else if(gameTime > 140 && gameTime <= 170){
             if(gameTime % 3 == 0 && lastZombieSpawnTime != gameTime){
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 );
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1);
                 return true;
             }
         } else if(gameTime > 170 && lastZombieSpawnTime <= 170 ){
             for(i = 0; i < 5 + (PvZDriver.getLevel() - 1) * 2; i++){
                 laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 );
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1);
             }
             return true;
         }
@@ -102,13 +102,17 @@ public class Board {
         int tileNo = 0;
         Tile currentTile;
         Plant plant;
-        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++)
+        {
+            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++)
+            {
                 plant = lane[laneNo][tileNo].getPlant();
                 currentTile = lane[laneNo][tileNo];
-                if(plant != null ){
+                if(plant != null )
+                {
                     plant.tryToAction(lane[laneNo][tileNo], timeElapsed, lane[laneNo]);
-                    if(plant.getHealth() <= 0){
+                    if(plant.getHealth() <= 0)
+                    {
                         currentTile.removePlant();
                         GameClock.printTime();
                         System.out.printf("Plant at lane %d tile %d died\n", plant.getLaneNo() + 1, plant.getTileNo() + 1);
@@ -189,8 +193,10 @@ public class Board {
                 while(iterator.hasNext()){
                     projectile = iterator.next();
                     
-                    if(currentTile.hasZombie()){
-                        if(projectile.hasHitZombie(currentTile)){
+                    if(currentTile.hasZombie())
+                    {
+                        if(projectile.hasHitZombie(currentTile))
+                        {
                         
                             iterator.remove();
 
@@ -201,13 +207,16 @@ public class Board {
                             }  until here */
 
                         } 
-                        else {
+                        else 
+                        {
                             projectile.updatePosition(timeElapsed);
                         }
                     } 
                     else {
-                        if(projectile.isReadyToMove(timeElapsed)){
-                            if(projectile.getTileNo() < MAX_TILES){
+                        if(projectile.isReadyToMove(timeElapsed))
+                        {
+                            if(projectile.getTileNo() < MAX_TILES)
+                            {
                                 iterator.remove();
                                 lane[laneNo][projectile.getTileNo()].placeProjectile(projectile);
                             } 
@@ -356,11 +365,14 @@ public class Board {
         return MAX_TILES;
     }
 
-    public ArrayList<Entity> getEntities(){
+    public ArrayList<Entity> getEntities()
+    {
         ArrayList<Entity> entities = new ArrayList<Entity>();
         Entity tempEntity;
         Zombie zombie;
+        Projectile projectile;
         Iterator<Zombie> zIterator;
+        Iterator<Projectile> pIterator;
         Plant plant;
         int row = 0;
         int col = 0;
@@ -370,16 +382,29 @@ public class Board {
             for(col = 0; col < getMaxTiles(); col++)
             {
                 zIterator = lane[row][col].getZombies().iterator();
+                pIterator = lane[row][col].getProjectiles().iterator();
                 plant = lane[row][col].getPlant();
 
-                while(zIterator.hasNext()) {   // iterator for each zombie
+                // iterator for each zombie
+                while(zIterator.hasNext()) 
+                {  
                     zombie = zIterator.next();  
-                    tempEntity = new Entity(zombie.getType(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
+                    tempEntity = new Entity(zombie.getType(), zombie.getModifier(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
                     entities.add(tempEntity);
-                    
                 }
-                if(plant != null){
-                    tempEntity = new Entity(plant.getName(), plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
+
+                // iterator for each projectile
+                while(pIterator.hasNext()) 
+                {  
+                    projectile = pIterator.next();  
+                    tempEntity = new Entity(projectile.getType(), "", projectile.getState(), projectile.getLaneNo(), projectile.getTileNo(), projectile.getPosition());
+                    entities.add(tempEntity);
+                }
+
+                if(plant != null)
+                {
+                    // second variable is "" because plants dont have modifier (e.g., cone, flag, bucket, etc)
+                    tempEntity = new Entity(plant.getName(), "", plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
                     entities.add(tempEntity);
                    // System.out.println(plant.getName() + plant.getState());
                 }
