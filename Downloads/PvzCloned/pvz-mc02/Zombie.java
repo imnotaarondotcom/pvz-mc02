@@ -61,7 +61,7 @@ public class Zombie {
         position = 0; // Starts at the beginning of the tile (right edge)
         
         type = "zombie";
-        state = "walk";
+        state = "walkA";
        
     }
 
@@ -70,7 +70,7 @@ public class Zombie {
      * Resets its internal position within the new tile based on any overflow.
      */
     public void move(){
-        state = "walk";
+        state = "walkA";
         this.resetPosition(position % Tile.getTileLength()); // Carry over fractional position to next tile
         tileNo = tileNo - 1; // Move to the previous tile (towards the house)
     }

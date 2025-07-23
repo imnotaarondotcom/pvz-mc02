@@ -22,29 +22,16 @@ import java.util.Iterator;
 public class Gui extends JPanel implements ActionListener {
     
 
-    public Gui(){
+    public Gui()
+    {
         init();
-        
-      
-        
     }
 
-    public void init(){
-     /*  frame.setLayout(new GridBagLayout());
-        
-        GridBagLayout grid = new GridBagLayout();
-        GridBagConstraints constraint = new GridBagConstraints();
-        constraint.gridx = 100;
-        constraint.gridy = 100;
-        grid.addLayoutComponent(frame, constraint);
-        JPanel tilePanel = new JPanel(new FlowLayout());
-        
-        tilePanel.setBackground( Color.blue);
-      frame.add(tilePanel, BorderLayout.SOUTH); */
+    public void init()
+    {
         animations = new AnimationManager();
-        animations.loadTile("Grass", 2);
-        animations.loadAnimation("zombie", "walk", 2);
-        animations.loadAnimation("peashooter", "idle", 4);
+        animations.loadTile("environment", "Grass", 2);
+        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
 
 
         tileImage = new BufferedImage[3];
@@ -78,25 +65,11 @@ public class Gui extends JPanel implements ActionListener {
         
       
         frame.setVisible(true);
-    
-
     }
-/* 
-   public void getImage(){
-    try{
-     
-       zom1 = ImageIO.read(new File("zombie1.png"));
-       zom2 = ImageIO.read(new File("zombie2.png"));
-        pea1 = ImageIO.read(new File("Peashooter1.png"));
-        tileImage[1] = ImageIO.read(new File("Grass2.png"));
-        tileImage[0] = ImageIO.read(new File("Grass1.png"));
-    }catch(IOException e){
-        e.printStackTrace();
-    }
-  
-   } */ 
+ 
     @Override
-    public void paintComponent(Graphics g ){
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; 
         BufferedImage[] tiles;
@@ -105,67 +78,51 @@ public class Gui extends JPanel implements ActionListener {
         int x = 0;
         int y = 0;
 
-        for(row = 0;  row < noLanes;  row++){
-            for(col = 0; col < noTiles; col++){
-                 tiles = animations.getTiles("Grass");  
-                if(tiles != null){
-                  
-
-                    
+        for(row = 0;  row < noLanes;  row++)
+        {
+            for(col = 0; col < noTiles; col++)
+            {
+                tiles = animations.getTiles("Grass");  
+                if(tiles != null)
+                {
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
-                    if((col + row) % 2 == 0){
+
+                    if((col + row) % 2 == 0)
+                    {
                       g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
+                    }
                 }
-                }
-                
-                
-            
             }
         }
 
         Entity entity;
         Iterator<Entity> entIterator;
-        if(entities != null){
+        if(entities != null)
+        {
             entIterator = entities.iterator();
             BufferedImage[] animation;
             toggle = !(toggle);
-            while(entIterator.hasNext()){
-               
+            while(entIterator.hasNext())
+            {
                 entity = entIterator.next();
                 x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo();
 
-
-                   // g2.drawImage(entity.getMovementAnimation()[0], x, y,(int)(tileX * 1.5),(int)(tileY * 1.5) ,null);
-                    animation = animations.getAnimation(entity.getType(), entity.getState());
+                animation = animations.getAnimation(entity.getType(), entity.getState());
                     
-                if(animation != null){/* 
-                    if(toggle){
-                        g2.drawImage(animation[0], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                        
-                    }
-                    else{
-                    g2.drawImage(animation[1], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                    }
-                    */
-                    g2.drawImage(animation[currentFrame %animation.length ], x, y,(int)(tileX ),(int)(tileY ) ,null);
-                   
-
-                   
-                    
+                if (animation != null)
+                {
+                    g2.drawImage(animation[currentFrame % animation.length ], x, y, (int)(tileX), (int)(tileY), null);          
                 }
-                else{
-                    System.out.println("notfound");
+                else
+                {
+                    System.out.println("Animation not found.");
                 }
-                
-                
-
-                 
-
             }
         }
 
-         if(frameCount >= 3){
+        if(frameCount >= 3)
+        {
             frameCount = 0;
             currentFrame++;
         }
@@ -173,34 +130,10 @@ public class Gui extends JPanel implements ActionListener {
             currentFrame = 0;
         }
           frameCount++;
-        
-       // g2.setColor(Color.blue);
-
-        
-      
-  
     }
 
-    /* 
-      @Override
-    public void run() {
-       x = 0;
-        while(true){
-            repaint();
-            toggle = !(toggle);
-            x+= 10;
-
-            try{
-                Thread.sleep(1000);
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-        
-    }
-*/
-
-    public void setBoardSize(int l, int t){
+    public void setBoardSize(int l, int t)
+    {
 
         setNoLanes(l);
         setNoTiles(t);
@@ -211,38 +144,43 @@ public class Gui extends JPanel implements ActionListener {
         setTileSize();
     }
 
-    public void setTileSize(){
-        
+    public void setTileSize()
+    {
         tileX = boardWidth / noTiles;
         tileY = boardHeight / noLanes;
 
         System.out.printf("x %d y %d ", tileX, tileY);
 
 
-          System.out.printf("Grid: %dx%d tiles | Tile size: %dx%d | Panel size: %dx%d%n",
-    noTiles, noLanes, 
-    tileX, tileY,
-    getWidth(), getHeight());
+        System.out.printf("Grid: %dx%d tiles | Tile size: %dx%d | Panel size: %dx%d%n",
+                            noTiles, noLanes, 
+                            tileX, tileY,
+                            getWidth(), getHeight());
     }
 
-    public void setNoLanes(int n){
+    public void setNoLanes(int n)
+    {
         noLanes = n;
     }
 
-    public void setNoTiles(int n){
+    public void setNoTiles(int n)
+    {
         noTiles = n;
     }
 
 
-    public int getx(){
+    public int getx()
+    {
         return x;
     }
 
-    public void setx(int x){
+    public void setx(int x)
+    {
         this.x = x;
     }
 
-    public void setEntities(ArrayList<Entity> e){
+    public void setEntities(ArrayList<Entity> e)
+    {
         entities = e;
     }
 
