@@ -42,14 +42,14 @@ public class AnimationManager {
     }
 
     /**
-     * Loads the tile images
+     * Loads the images associated with file name
      * @param fileName -  name of directory path 
-     * @param noTiles - number of tiles to load
+     * @param noImages - number of tiles to load
      */
-    public void loadTile(String fileName, int noTiles){
-        BufferedImage[] tileType = new BufferedImage[noTiles];
+    public void loadImages(String fileName, int noImages){
+        BufferedImage[] tileType = new BufferedImage[noImages];
         int i = 0;
-        for(i =0 ; i < noTiles; i++){
+        for(i =0 ; i < noImages; i++){
             String filePath = fileName.concat(Integer.toString(i + 1)).concat(".png");
             try{
                 tileType[i] = ImageIO.read(new File(filePath));
@@ -82,21 +82,21 @@ public class AnimationManager {
     }
 
     /**
-     * gets the tile images to be used for the level
-     * @param tileType - file name of tile to get
-     * @return - returns images of tiles 
+     * gets the images to be used for the level
+     * @param imageName - file name of image to get
+     * @return - returns images assoicaited with imageName
      */
 
-    public BufferedImage[] getTiles(String tileType){
+    public BufferedImage[] getImages(String imageName){
 
-        if(tiles.containsKey(tileType)){
+        if(tiles.containsKey(imageName)){
            
-             return tiles.get(tileType);
+             return tiles.get(imageName);
               
 
         }
         else{
-            System.out.println("Image " + tileType + "not found\n");
+            System.out.println("Image " + imageName + "not found\n");
             return null;
         }
        

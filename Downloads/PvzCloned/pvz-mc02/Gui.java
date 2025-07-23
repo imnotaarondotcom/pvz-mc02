@@ -13,13 +13,15 @@ import javax.imageio.ImageIO;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Gui extends JPanel implements ActionListener {
+public class Gui extends JPanel  {
     
 
     public Gui(){
@@ -30,71 +32,60 @@ public class Gui extends JPanel implements ActionListener {
     }
 
     public void init(){
-     /*  frame.setLayout(new GridBagLayout());
-        
-        GridBagLayout grid = new GridBagLayout();
-        GridBagConstraints constraint = new GridBagConstraints();
-        constraint.gridx = 100;
-        constraint.gridy = 100;
-        grid.addLayoutComponent(frame, constraint);
-        JPanel tilePanel = new JPanel(new FlowLayout());
-        
-        tilePanel.setBackground( Color.blue);
-      frame.add(tilePanel, BorderLayout.SOUTH); */
+   
         animations = new AnimationManager();
-        animations.loadTile("Grass", 2);
+        animations.loadImages("Grass", 2);
         animations.loadAnimation("zombie", "walk", 2);
         animations.loadAnimation("peashooter", "idle", 4);
+        animations.loadImages("sunBox", 1);
 
 
-        tileImage = new BufferedImage[3];
         topPanelHeight = 200;
         screenHeight = 1080 ;
         screenWidth = 1920;
 
         frameCount = 0;
         currentFrame = 0;
-        
-     
+
+
 
         frame = new JFrame("Plants Vs Zombies");
         frame.setSize(screenWidth, screenHeight);
-   
+
         setBackground(Color.black);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
         frame.setResizable(false);   
-      
-        
-       JPanel topPanel = new JPanel(new BorderLayout());
-       topPanel.setPreferredSize(new Dimension(100,topPanelHeight));
 
-       this.setLayout(new BorderLayout());
 
-      
+        // creates the panel above the board
+        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight);
+       
+        frame.add(topPanel);
+
+
+        this.setLayout(new BorderLayout());
+
+
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(topPanel, BorderLayout.NORTH);
         this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
         frame.add(this, BorderLayout.CENTER );
-        
-      
         frame.setVisible(true);
-    
+    }
 
-    }
-/* 
-   public void getImage(){
-    try{
+
      
-       zom1 = ImageIO.read(new File("zombie1.png"));
-       zom2 = ImageIO.read(new File("zombie2.png"));
-        pea1 = ImageIO.read(new File("Peashooter1.png"));
-        tileImage[1] = ImageIO.read(new File("Grass2.png"));
-        tileImage[0] = ImageIO.read(new File("Grass1.png"));
-    }catch(IOException e){
-        e.printStackTrace();
+    public void setMouseListener(MouseListener listener){
+        this.addMouseListener(listener);
+        topPanel.addMouseListener(listener);
     }
-  
-   } */ 
+
+    
+    public void mousePressed(MouseEvent e){
+        System.out.println(e.getX() + " "+ e .getY());
+    }
+
     @Override
     public void paintComponent(Graphics g ){
         super.paintComponent(g);
@@ -107,7 +98,7 @@ public class Gui extends JPanel implements ActionListener {
 
         for(row = 0;  row < noLanes;  row++){
             for(col = 0; col < noTiles; col++){
-                 tiles = animations.getTiles("Grass");  
+                 tiles = animations.getImages("Grass");  
                 if(tiles != null){
                   
 
@@ -233,13 +224,12 @@ public class Gui extends JPanel implements ActionListener {
         noTiles = n;
     }
 
-
-    public int getx(){
-        return x;
+    public int getTileX(){
+        return tileX;
     }
-
-    public void setx(int x){
-        this.x = x;
+    
+    public int getTileY(){
+        return tileY;
     }
 
     public void setEntities(ArrayList<Entity> e){
@@ -267,12 +257,14 @@ public class Gui extends JPanel implements ActionListener {
     private int boardWidth;
 
     private JFrame frame ;
-    private BufferedImage[] tileImage;
+    
 
     private int frameCount;
     private int currentFrame;
    
     private AnimationManager animations;
+
+    private PlantSelectionPanel topPanel;
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -1,25 +1,34 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Controller implements ActionListener{
-    private Gui gui;
-    private Board board;
-        double lastBoardUpdate;
-        int lastZombieSpawnTime;
-        int lastSunSpawnTime;
-        double startTime; 
 
+
+public class Controller  extends MouseAdapter{
+    
     public Controller(Gui g , Board b){
         gui = g;
         board = b;
+        addMouseListener();
+    }
+
+    public void addMouseListener(){
+        gui.setMouseListener(this);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mousePressed(MouseEvent e){
 
+        int tileSizeX = gui.getX();
+        int tileSizeY = gui.getY();
+
+        System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
     }
+
+    
 
     public void start(){
         boolean gameOver = false;
@@ -93,5 +102,20 @@ public class Controller implements ActionListener{
 
             return gameOver;
         }
+
+
+        @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+
+    private Gui gui;
+    private Board board;
+    double lastBoardUpdate;
+    int lastZombieSpawnTime;
+    int lastSunSpawnTime;
+    double startTime; 
+
      
     }
