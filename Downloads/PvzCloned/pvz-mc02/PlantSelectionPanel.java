@@ -1,8 +1,13 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PlantSelectionPanel extends JPanel{
@@ -14,6 +19,27 @@ public class PlantSelectionPanel extends JPanel{
      * @param topPanelHeight - length of the panel to be created
      */
     public PlantSelectionPanel(int topPanelWidth , int topPanelHeight , int noBorders){
+        this.setLayout(null);
+
+
+        sunCountPanel = new JPanel(new BorderLayout());
+        sunDisplayPanel = new JPanel(new FlowLayout());
+
+        sunCountPanel.add(sunDisplayPanel, BorderLayout.SOUTH);
+        
+        sunCountPanel.setBounds(0 , 0 ,topPanelWidth / noBorders, topPanelHeight);
+        sunCountPanel.setOpaque(false);
+        sunDisplayPanel.setOpaque(false);
+
+        sunCountLabel = new JLabel();
+        sunCountLabel.setFont(new Font("Calibri", Font.PLAIN, 20));
+
+
+        sunDisplayPanel.add(sunCountLabel); 
+
+        
+        this.add(sunCountPanel);
+
 
         this.noBorders = noBorders;
 
@@ -24,7 +50,9 @@ public class PlantSelectionPanel extends JPanel{
         animations = new AnimationManager();
         animations.loadImages("borders" , "sunbox" , 1);
         animations.loadImages("borders", "border" , 1);
-
+        animations.loadImages("icons", "peashooter_icon", 1);
+        animations.loadImages("icons", "sunflower_icon", 1);
+        animations.loadImages("icons", "cherrybomb_icon", 1);
     }
     @Override
     public void paintComponent(Graphics g){   
@@ -35,19 +63,42 @@ public class PlantSelectionPanel extends JPanel{
         
         BufferedImage sun = animations.getImages("sunbox")[0];
         BufferedImage border = animations.getImages("border")[0];
+        ArrayList<BufferedImage> icons = new ArrayList<BufferedImage>();
+        icons.add(animations.getImages("peashooter_icon")[0]);
+        icons.add(animations.getImages("sunflower_icon")[0]);
+        icons.add(animations.getImages("cherrybomb_icon")[0]);
+
         int i = 1;
 
         g2.drawImage(sun, 0 , 0 , panelWidth / noBorders , panelHeight, null);
 
         for(i = 1 ; i < 6; i++){
+            BufferedImage icon = null;
+
+            
+            
+
             g2.drawImage(border, panelWidth * i / noBorders , 0 , panelWidth / noBorders , panelHeight , null);
+
+            if(i <= icons.size()){
+                icon = icons.get(i - 1);   
+                g2.drawImage(icon, panelWidth * i / noBorders , 0 , panelWidth / noBorders , panelHeight , null);    
+            }
+             
         }
         
 
    
     }
-     AnimationManager animations;
-     int panelHeight;
-     int panelWidth;
-     int noBorders;
+
+    public void updateSunCount(int sunCount){
+        sunCountLabel.setText(Integer.toString(sunCount));
+    }
+    private AnimationManager animations;
+    private int panelHeight;
+    private int panelWidth;
+    private int noBorders;
+    private JLabel sunCountLabel;
+    private JPanel sunCountPanel;
+    private JPanel sunDisplayPanel;
 }

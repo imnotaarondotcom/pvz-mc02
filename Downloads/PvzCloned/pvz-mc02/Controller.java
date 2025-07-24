@@ -38,10 +38,7 @@ public class Controller  extends MouseAdapter{
     public void mousePressed(MouseEvent e){
         int laneNo = (int) e.getY()  / gui.getTileY();
         int tileNo = (int) e.getX() / gui.getTileX() ;
-        
-
-       
-            
+  
             player.tryToplacePlant(plantNo, laneNo, tileNo);
             //board.getTile(laneNo,tileNo).placePlant(new Peashooter(laneNo, tileNo));
         
@@ -49,6 +46,7 @@ public class Controller  extends MouseAdapter{
         System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
 
         player.collectSun(board.getTile(laneNo, tileNo).getSunList());
+        gui.updateSunCount(player.getTotalSun());
         plantNo = 0;
     }
 
@@ -79,7 +77,7 @@ public class Controller  extends MouseAdapter{
 
         while(!updateModel()){ 
             gui.setEntities(board.getEntities());
-           
+            gui.updateSunCount(player.getTotalSun());
         
             gui.repaint();
             

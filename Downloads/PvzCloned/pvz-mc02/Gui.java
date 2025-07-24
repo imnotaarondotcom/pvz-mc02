@@ -270,6 +270,10 @@ public class Gui extends JPanel  {
         return screenHeight;
     }
 
+    public void updateSunCount(int sunCount){
+        topPanel.updateSunCount(sunCount);
+    }
+
     private int x;
     private boolean toggle; // temps
 
