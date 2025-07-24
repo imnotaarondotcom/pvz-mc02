@@ -55,9 +55,7 @@ public class Controller  extends MouseAdapter{
     
 
     public void start(){
-        boolean gameOver = false;
-     
-        int input = 0;
+       
         GameClock clock = new GameClock();
 
         System.out.println("*** PLANTS VS. ZOMBIES *** \nPress 1 To Play");

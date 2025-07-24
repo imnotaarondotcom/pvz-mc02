@@ -1,4 +1,4 @@
-import java.awt.image.BufferedImage;
+
 
 /**
  * This class defines the behavior and properties of a Peashooter plant in the game.
@@ -46,16 +46,19 @@ public class Peashooter extends Plant {
     /**
      * Attempts to make the Peashooter shoot a pea.
      * Fires if lane is not clear (i.e., there is a zombie) and attack cooldown is met.
-     * @param t Current tile of the plant.
+     * @param board board that plant is occupying
      * @param elapsedTime Time elapsed since last update.
      * @param tiles All tiles in the plant's lane.
      */
     @Override
-    public void tryToAction(Tile t, double elapsedTime, Tile[] tiles){
+    public void tryToAction(Board board, double elapsedTime){
+        Tile[] tiles = board.getLane(LANE_NO);
+        
+
         if(!isLaneClear(tiles)){
             updateTime(elapsedTime);
             if(timeSinceLastAttack >= SPEED){
-                action(t);
+                action(board);
                 timeSinceLastAttack = 0;
             }
         }
@@ -63,10 +66,11 @@ public class Peashooter extends Plant {
 
     /**
      * Executes the Peashooter's attack action: creates and places a projectile.
-     * @param t Current tile of the plant.
+     * @param b Current board of plant
      */
     @Override
-    public void action(Tile t){
+    public void action(Board b){
+        Tile t = b.getTile(LANE_NO, TILE_NO);
         t.placeProjectile(new Projectile(LANE_NO, TILE_NO , DAMAGE, DAMAGEFALLOFF, DIRECTDAMAGE));
         updateState("idle"); // peashooter doesnt have an action animation
     }

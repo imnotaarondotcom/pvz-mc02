@@ -32,10 +32,11 @@ public class Sunflower extends Plant {
 
     /**
      * Executes the Sunflower's action: producing a Sun collectible.
-     * @param t Current tile of the plant.
+     * @param b Current boarde of the plant.
      */
     @Override
-    public void action(Tile t){
+    public void action(Board b ){
+        Tile t = b.getTile(LANE_NO, TILE_NO);
         Sun temp = new Sun(LANE_NO, TILE_NO, this);
         t.addSun(temp);
     }
@@ -43,15 +44,14 @@ public class Sunflower extends Plant {
     /**
      * Attempts to make the Sunflower produce sun.
      * Produces sun if its internal production cooldown is met.
-     * @param t Current tile of the plant.
+     * @param b board containing plant
      * @param elapsedTime Time elapsed since last update.
-     * @param tiles All tiles in the plant's lane (unused for Sunflower's action).
      */
     @Override
-    public void tryToAction(Tile t, double elapsedTime, Tile[] tiles){
+    public void tryToAction(Board b, double elapsedTime){
         updateTime(elapsedTime);
         if(timeSinceLastAttack >= SPEED){
-            action(t);
+            action(b);
             timeSinceLastAttack = 0;
         }
     }

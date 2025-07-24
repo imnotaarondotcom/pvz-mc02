@@ -7,12 +7,13 @@ public class Player {
     private Board board;
 
     public Player(Board board){
-        totalSun = 100;
+        totalSun = 150;
         this.board = board;
 
         plantList = new HashMap<>();
         plantList.put(1,new Peashooter(0, 0));
         plantList.put(2,new Sunflower(0, 0));
+        plantList.put(3,new Cherrybomb(0, 0));
         
        
     }
@@ -61,6 +62,31 @@ public class Player {
                                 userTile.placePlant(new Sunflower(userTile.getLaneNo(), userTile.getTileNo()));
                                 totalSun -= Sunflower.getCost();
                                 Sunflower.setTimeSinceLastPlant(currentTime); // Reset Peashooter's planting cooldown
+                            } else if (userTile != null) {
+                                System.out.println("Tile is occupied!");
+                            }
+                        } else {
+                            System.out.println("Still in cooldown!");
+                        }
+                    } else {
+                        System.out.println("Not enough sun!");
+                    }
+
+            
+
+        }
+
+        else if(pickedPlant instanceof Cherrybomb){ // Player wants to place a Peashooter
+                
+                    if(totalSun >= Cherrybomb.getCost()){ // Check if player has enough sun
+                        // Check if Peashooter is off cooldown for planting
+                        if(currentTime - Cherrybomb.getTimeSinceLastPlant() >= Cherrybomb.getCooldown()){
+                            userTile = board.getTile(laneNo, tileNo);
+                            if(userTile != null && userTile.getPlant() == null){ // Check if tile is valid and empty
+                                // Place new Peashooter and update game state
+                                userTile.placePlant(new Cherrybomb(userTile.getLaneNo(), userTile.getTileNo()));
+                                totalSun -= Cherrybomb.getCost();
+                                Cherrybomb.setTimeSinceLastPlant(currentTime); // Reset Peashooter's planting cooldown
                             } else if (userTile != null) {
                                 System.out.println("Tile is occupied!");
                             }

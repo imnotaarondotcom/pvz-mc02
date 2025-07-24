@@ -78,6 +78,11 @@ public class Gui extends JPanel  {
         // Peashooter idle animation
         animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
 
+        //cherry bomb idle animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
+        //cherry bomb explode animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
+
         // Sunflower idle animation
         animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
 
@@ -180,7 +185,11 @@ public class Gui extends JPanel  {
                     
                 if (animation != null)
                 {
-                    g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);          
+                    if(!entity.getType().equals("zombie") && !entity.getType().equals("pea"))
+                        g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
+                    else{
+                        g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
+                    }
                 }
                 else
                 {

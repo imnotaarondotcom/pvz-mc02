@@ -55,7 +55,7 @@ public class Tile {
         if(TILE_NO == PvZDriver.getMaxTiles() - 1){ // Check if this is the designated spawn tile
 
             // ZOMBIE TO BE SPAWNED
-            Zombie z = new Zombie(laneNo, tileNo, "flag");
+            Zombie z = new Zombie(laneNo, tileNo , "flag");
             
             GameClock.printTime();
             placeZombie(z);

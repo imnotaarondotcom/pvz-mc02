@@ -111,7 +111,7 @@ public class Board {
                 currentTile = lane[laneNo][tileNo];
                 if(plant != null )
                 {
-                    plant.tryToAction(lane[laneNo][tileNo], timeElapsed, lane[laneNo]);
+                    plant.tryToAction(this, timeElapsed);
                     if(plant.getHealth() <= 0)
                     {
                         currentTile.removePlant();
@@ -311,22 +311,28 @@ public class Board {
 
                 while(zombieIterator.hasNext()){
                     zombie = zombieIterator.next();
-                    if(plant != null){ // If a plant exists in current tile, zombie tries to attack it
+                    if(plant != null && !(plant instanceof Cherrybomb) ){ // If a plant exists in current tile, zombie tries to attack it
                         if(zombie.isReadyToAttack(timeElapsed)){
                             zombie.attack(plant);   
                         }
                     } else { // If no plant, then update position of the zombie
                         if(zombie.isReadyToMove(timeElapsed)){
                             
-                            if(tileNo == 0){ 
+                            if(zombie.inLastTile()){ 
 
-                                zombie.updatePosition(timeElapsed * 5);
+                                zombie.move();
 
-                                GameClock.printTime();
-                                System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
-                                System.out.println("*** GAME OVER | ZOMBIES WIN ***");
-                                 System.out.println("tileNo is " + tileNo);
-                                return true;
+                                
+                            }
+                            else if(zombie.getTileNo() == -1){
+                                if(zombie.isReadyToMove(timeElapsed)){
+                                    GameClock.printTime();
+                                    System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
+                                    System.out.println("*** GAME OVER | ZOMBIES WIN ***");
+                                    System.out.println("tileNo is " + tileNo);
+                                    return true;
+                                }
+                                
                             }
                             else{
                                 GameClock.printTime();
@@ -338,7 +344,8 @@ public class Board {
                                 
                             }
                             
-                        } 
+                        }
+                        else 
                         if(!zombie.isAlive()){
                             zombieIterator.remove();
                             GameClock.printTime();
@@ -424,6 +431,10 @@ public class Board {
     
     public Tile getTile(int laneNo, int tileNo){
         return lane[laneNo][tileNo];
+    }
+
+    public Tile[] getLane(int l){
+        return lane[l];
     }
 
     private int MAX_TILES;

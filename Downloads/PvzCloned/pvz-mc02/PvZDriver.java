@@ -122,7 +122,7 @@ public class PvZDriver {
             for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
                 plant = lane[laneNo][tileNo].getPlant();
                 if(plant != null ){
-                    plant.tryToAction(lane[laneNo][tileNo], timeElapsed, lane[laneNo]);
+ //                   plant.tryToAction(lane[laneNo][tileNo], timeElapsed, lane[laneNo]);
                 }
             }
         } 

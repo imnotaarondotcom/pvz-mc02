@@ -62,7 +62,7 @@ public class Zombie {
     public Zombie(int laneNo, int tileNo, String modifier)
     {
         size = 1;
-        this.tileNo = tileNo;
+        this.tileNo = tileNo ;
         this.laneNo = laneNo ;
         
         ATTACK_SPEED = 1;
