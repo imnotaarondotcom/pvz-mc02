@@ -33,10 +33,59 @@ public class Gui extends JPanel  {
     public void init()
     {
         animations = new AnimationManager();
+
+        // Environment
         animations.loadImages("environment", "Grass", 2);
-        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
-        animations.loadAnimation("peashooter", "peashooter_idle", 7);
+
+        // Icons
         animations.loadAnimation("icons", "sun_idle", 1);
+
+
+        // Normal Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombie_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombie_walkB", 7);
+        animations.loadAnimation("zombie_walk", "zombie_walkC", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombie_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombie_eatB", 7);
+        animations.loadAnimation("zombie_eat", "zombie_eatC", 5);
+
+        // Conehead Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombiecone_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombiecone_walkB", 7);
+        animations.loadAnimation("zombie_walk", "zombiecone_walkC", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombiecone_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombiecone_eatB", 7);
+        animations.loadAnimation("zombie_eat", "zombiecone_eatC", 7);
+
+        // Flag Zombie animations
+        // walk
+        animations.loadAnimation("zombie_walk", "zombieflag_walkA", 7);
+        animations.loadAnimation("zombie_walk", "zombieflag_walkB", 7);
+
+        // eat
+        animations.loadAnimation("zombie_eat", "zombieflag_eatA", 7);
+        animations.loadAnimation("zombie_eat", "zombieflag_eatB", 7);
+
+        // Zombie die animation (NOT IMPLEMENTED YET, IDK IF WE SHOULD)
+        animations.loadAnimation("zombie_die", "zombie_die", 6);
+
+        // Peashooter idle animation
+        animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
+
+        // Sunflower idle animation
+        animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
+
+        // Pea (projectile) idle (just one frame)
+        animations.loadAnimation("plants/peashooter", "pea_idle", 1);
+
+        // Pea hit animation
+        animations.loadAnimation("plants/peashooter", "pea_hit", 2);
 
         noBorders = 6;
 
@@ -127,7 +176,7 @@ public class Gui extends JPanel  {
                 x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo();
 
-                animation = animations.getAnimation(entity.getType(), entity.getState());
+                animation = animations.getAnimation(entity.getType(), entity.getModifier(), entity.getState());
                     
                 if (animation != null)
                 {

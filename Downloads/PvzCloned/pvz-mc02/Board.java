@@ -97,24 +97,28 @@ public class Board {
     }
 
 
-    public void updatePlants(double timeElapsed){
+    public void updatePlants(double timeElapsed)
+    {
         int laneNo = 0;
         int tileNo = 0;
         Tile currentTile;
         Plant plant;
-        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++)
+        {
+            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++)
+            {
                 plant = lane[laneNo][tileNo].getPlant();
                 currentTile = lane[laneNo][tileNo];
-                if(plant != null ){
+                if(plant != null )
+                {
                     plant.tryToAction(lane[laneNo][tileNo], timeElapsed, lane[laneNo]);
-                    if(plant.getHealth() <= 0){
+                    if(plant.getHealth() <= 0)
+                    {
                         currentTile.removePlant();
                         GameClock.printTime();
                         System.out.printf("Plant at lane %d tile %d died\n", plant.getLaneNo() + 1, plant.getTileNo() + 1);
                     }
                 }
-                 
             }
         } 
     }
@@ -362,7 +366,9 @@ public class Board {
         Sun sun;
         Entity tempEntity;
         Zombie zombie;
+        Projectile projectile;
         Iterator<Zombie> zIterator;
+        Iterator<Projectile> projIterator;
         Plant plant;
         int row = 0;
         int col = 0;
@@ -372,24 +378,37 @@ public class Board {
             for(col = 0; col < getMaxTiles(); col++)
             {
                 zIterator = lane[row][col].getZombies().iterator();
-                plant = lane[row][col].getPlant();
                 sIterator = lane[row][col].getSunList().iterator();
+                projIterator = lane[row][col].getProjectiles().iterator();
+                plant = lane[row][col].getPlant();
 
-                while(zIterator.hasNext()) {   // iterator for each zombie
+                // iterator for each zombie
+                while(zIterator.hasNext()) 
+                {  
                     zombie = zIterator.next();  
-                    tempEntity = new Entity(zombie.getType(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
+                    tempEntity = new Entity(zombie.getType(), zombie.getModifier(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
                     entities.add(tempEntity);
-                    
-                }
-                if(plant != null){
-                    tempEntity = new Entity(plant.getName(), plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
-                    entities.add(tempEntity);
-                   // System.out.println(plant.getName() + plant.getState());
                 }
 
-                while(sIterator.hasNext()){
+                // iterator for each sun
+                while(sIterator.hasNext())
+                {
                     sun = sIterator.next();
-                    tempEntity = new Entity(sun.getName(), sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition());
+                    tempEntity = new Entity(sun.getName(), "", sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition());
+                    entities.add(tempEntity);
+                }
+
+                // iterator for each projectile
+                while(projIterator.hasNext()) 
+                {  
+                    projectile = projIterator.next();  
+                    tempEntity = new Entity(projectile.getType(), "", projectile.getState(), projectile.getLaneNo(), projectile.getTileNo(), projectile.getPosition());
+                    entities.add(tempEntity);
+                }
+
+                if(plant != null)
+                {
+                    tempEntity = new Entity(plant.getName(), "", plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
                     entities.add(tempEntity);
                 }
             }

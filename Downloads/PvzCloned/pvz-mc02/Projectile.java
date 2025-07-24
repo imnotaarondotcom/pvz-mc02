@@ -32,6 +32,9 @@ public class Projectile {
     /** The number of tiles the projectile has traveled since being fired. */
     private int tilesTravelled;
 
+    private String type;
+    private String state;
+
     /**
      * Initializes a new projectile with its properties and starting location.
      * @param l The lane index where the projectile starts.
@@ -49,6 +52,9 @@ public class Projectile {
         DAMAGEFALLOFF = df;
         DIRECTDAMAGE = dd;
         tilesTravelled = 0; // Starts with no tiles traveled
+
+        type = "pea";
+        state = "idle";
     }
 
     /**
@@ -139,5 +145,13 @@ public class Projectile {
      */
     public int getDAMAGE(){
         return DAMAGE;
+    }
+
+    public String getState(){
+        return state;
+    }
+
+    public String getType(){
+        return type;
     }
 }

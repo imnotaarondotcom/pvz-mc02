@@ -91,9 +91,10 @@ public class AnimationManager {
      * @param animation
      * @return
      */
-    public BufferedImage[] getAnimation(String entity, String animation)
+    public BufferedImage[] getAnimation(String entity, String modifier, String animation)
     {
-        String fileKey = entity.concat("_").concat(animation);
+        String fileKey = entity + modifier + "_" + animation;
+        
         if(sprites.containsKey(fileKey))
         {
             return sprites.get(fileKey);

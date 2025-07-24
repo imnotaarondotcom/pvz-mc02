@@ -27,7 +27,7 @@ public class Sunflower extends Plant {
      */
     public Sunflower(int l , int t){
         // Calls superclass constructor (Plant's name, speed, health, lane, tile)
-        super("Sunflower", 24, 300, l, t);
+        super("sunflower", 24, 300, l, t);
     }
 
     /**

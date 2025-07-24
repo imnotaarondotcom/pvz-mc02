@@ -39,10 +39,14 @@ public class Zombie {
     /** The current lane index (row) the zombie is occupying. */
     private int laneNo;
     // type of zombie
+
     private String type;
+
     // state the zombie is in (Attacking , Moving)
     private String state;
 
+    private String modifier;
+    private int armor;
 
     /**
      * Constructs a new Zombie object.
@@ -50,27 +54,39 @@ public class Zombie {
      * @param laneNo The lane index (row) the zombie will occupy.
      * @param tileNo The tile index (column) the zombie will occupy.
      */
-    public Zombie(int laneNo, int tileNo){
+    public Zombie(int laneNo, int tileNo, String modifier)
+    {
         this.tileNo = tileNo;
         this.laneNo = laneNo ;
+        
         ATTACK_SPEED = 1;
-        SPEED = 0.20; // Represents 5 seconds to pass one tile (1 unit / 0.20 units/sec = 5 seconds)
+        SPEED = 0.20; // seconds to pass one tile
         DAMAGE = 100;
         timeSinceLastAttack = 0;
-        health = 200;
-        position = 0; // Starts at the beginning of the tile (right edge)
-        
+        health = 270;
+        position = 0;
+
+        this.modifier = modifier;
         type = "zombie";
-        state = "walkA";
-       
+        if (this.modifier == "cone")
+        {
+            armor = 370;
+        }
+        else
+        {
+            armor = 0;
+        }
+
+        state = "walkA"; // walkA = zombie w/ full body, walkB = zombie w/ lost leg, etc.
     }
 
     /**
      * Moves the zombie to the next tile by decrementing its tile number.
      * Resets its internal position within the new tile based on any overflow.
      */
-    public void move(){
-        state = "walkA";
+    public void move()
+    {
+        updateState("walk");
         this.resetPosition(position % Tile.getTileLength()); // Carry over fractional position to next tile
         tileNo = tileNo - 1; // Move to the previous tile (towards the house)
     }
@@ -81,7 +97,8 @@ public class Zombie {
      * @param elapsedTime The time elapsed since the last update in seconds.
      * @return True if the zombie has traversed the current tile and is ready to move to the next, false otherwise.
      */
-    public boolean isReadyToMove(double elapsedTime){
+    public boolean isReadyToMove(double elapsedTime)
+    {
         this.updatePosition(elapsedTime);
         return position >= Tile.getTileLength();
     }
@@ -94,8 +111,9 @@ public class Zombie {
      * @param timeElapsed The time elapsed since the last update in seconds.
      * @return True if the zombie's attack cooldown has reset and it can perform an attack, false otherwise.
      */
-    public boolean isReadyToAttack(double timeElapsed){
-        state = "attacking";
+    public boolean isReadyToAttack(double timeElapsed)
+    {
+        updateState("eat");
         updateAttackCooldown(timeElapsed);
         if(timeSinceLastAttack > ATTACK_SPEED ){
             resetAttackCooldown(timeSinceLastAttack % ATTACK_SPEED); // Keep any excess time for next cooldown
@@ -123,13 +141,115 @@ public class Zombie {
      * Applies damage to the zombie, reducing its health.
      * @param damage The amount of damage to inflict.
      */
-    public void takeDamage(int damage){
-        health -= damage;
+    public void takeDamage(int damage)
+    {
+        if (armor > 0)
+        {
+            armor -= damage;
+            updateModifier();
+        }
+        else
+        {
+            health -= damage;
+            updateModifier();
+        }
+
         GameClock.printTime();
         System.out.printf("Zombie at lane %d tile %d hit. Updated health: %d\n",
                           (laneNo + 1), (tileNo), health);
+
     }
     
+    // Reverts a special zombie to normal zombie if theyve taken enough damage
+    // (E.g., Cone zombie loses its cone, flag zombie loses its flag)
+    public void updateModifier()
+    {
+        // Conehead loses its cone
+        if (modifier == "cone")
+        {
+            if (armor <= 0)
+            {
+                modifier = "";
+            }
+        }
+
+        // Flag zombie loses its flag
+        if (health <= 90)
+        {
+            modifier = "";
+        }
+    }
+
+    // Updates the state of the zombie
+    public void updateState(String stateType)
+    {
+        // if walking
+        if (stateType == "walk")
+        {
+            if (modifier == "cone")
+            {
+                if (armor > 240)
+                {
+                    state = "walkA"; // Perfect cone
+                }
+                else if (armor > 110 && armor <= 240)
+                {
+                    state = "walkB"; // Damaged cone
+                }
+                else if (armor <= 110 && armor > 0)
+                {
+                    state = "walkC"; // Really damaged cone
+                }
+            }
+
+            if (health > 180) 
+            {
+                state = "walkA"; // full zombie
+            }
+            else if (health > 90 && health <= 180)
+            {
+                state = "walkB"; // lost arm
+            }
+            else 
+            {
+                state = "walkC"; // lost head
+            }
+        }
+
+        // if eating
+        if (stateType == "eat")
+        {
+            if (modifier == "cone")
+            {
+                if (armor > 240)
+                {
+                    state = "eatA"; // Perfect cone
+                }
+                else if (armor > 110 && armor <= 240)
+                {
+                    state = "eatB"; // Damaged cone
+                }
+                else if (armor <= 110 && armor > 0)
+                {
+                    state = "eatC"; // Really damaged cone
+                }
+            }
+
+            if (health > 180) 
+            {
+                state = "eatA"; // full zombie
+            }
+            else if (health > 90 && health <= 180)
+            {
+                state = "eatB"; // lost arm
+            }
+            else 
+            {
+                state = "eatC"; // lost head
+            }
+        }
+    }
+
     /**
      * Updates the zombie's fractional position within its current tile based on its speed.
      * @param elapsedTime The time elapsed since the last update in seconds.
@@ -219,6 +339,10 @@ public class Zombie {
 
     public String getType(){
         return type;
+    }
+
+    public String getModifier(){
+        return modifier;
     }
 
     /**

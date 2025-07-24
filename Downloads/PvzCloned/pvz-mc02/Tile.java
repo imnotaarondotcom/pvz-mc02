@@ -53,7 +53,10 @@ public class Tile {
      */
     public void spawnZombie(int laneNo, int tileNo){
         if(TILE_NO == PvZDriver.getMaxTiles() - 1){ // Check if this is the designated spawn tile
-            Zombie z = new Zombie(laneNo, tileNo);
+
+            // ZOMBIE TO BE SPAWNED
+            Zombie z = new Zombie(laneNo, tileNo, "flag");
+            
             GameClock.printTime();
             placeZombie(z);
             System.out.println("Zombie Has Been Spawned at Lane No " + (LANE_NO + 1) + " Tile No " + (TILE_NO + 1) );
