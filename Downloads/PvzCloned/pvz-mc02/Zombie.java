@@ -46,9 +46,9 @@ public class Zombie {
     private String state;
 
 
-    // modifier for special zombies (flag for flag zombie, cone for cone zombie)
+    // modifier for special zombies (flag for flag zombie, cone for cone zombie, modifier = "" for normal zombie)
     private String modifier;
-    
+
     private int armor;
 
     /**
