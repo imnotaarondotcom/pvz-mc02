@@ -18,7 +18,11 @@ public class Sun {
 
     private String state;
 
+    private double size;
+
     private double position;
+
+    private double positionY;
 
     /** The lane number (row) where the sun is located. */
     private final int LANE_NO;
@@ -33,7 +37,9 @@ public class Sun {
      * @param t The tile index (column) where the sun will be spawned.
      */
     public Sun(int l, int t){
+        positionY = 0.25;
         position = 0;
+        size = 0.5;
         NAME = "sun";
         state = "idle";
         TILE_NO = t;
@@ -51,7 +57,9 @@ public class Sun {
      * @param p The {@link Plant} object that produced this sun.
      */
     public Sun(int l, int t, Plant p){
+        positionY = 0.25;
         position = 0;
+        size = 0.5;
         NAME = "sun";
         state = "idle";
         TILE_NO = t;
@@ -84,7 +92,15 @@ public class Sun {
         return TILE_NO;
     }
 
+    public double getSize(){
+        return size;
+    }
+
     public double getPosition(){
         return position;
+    }
+
+    public double getPositionY(){
+        return positionY;
     }
 }

@@ -23,6 +23,8 @@ public class Projectile {
     /** The current position of the projectile within its current tile (0.0 to Tile.getTileLength()). */
     private double position;
 
+    private double positionY;
+
     /** The current tile index (column) the projectile occupies. */
     private int tileNo;
 
@@ -31,9 +33,11 @@ public class Projectile {
 
     /** The number of tiles the projectile has traveled since being fired. */
     private int tilesTravelled;
-
+    
     private String type;
     private String state;
+
+    private double size;
 
     /**
      * Initializes a new projectile with its properties and starting location.
@@ -44,9 +48,11 @@ public class Projectile {
      * @param dd The direct hit damage bonus.
      */
     public Projectile(int l, int t, int d, int df, int dd){
+        positionY = 0.25;
+        size = 0.25;
         DAMAGE = d;
-        position = 0; // Projectiles start at the beginning of their tile
-        SPEED = 4.5; // Fixed speed of 4.5 tiles per second
+        position = 0.8; // Projectiles start at the beginning of their tile
+        SPEED = 0.5; // Fixed speed of 2 tiles per second
         tileNo = t;
         laneNo = l;
         DAMAGEFALLOFF = df;
@@ -101,7 +107,7 @@ public class Projectile {
 
     public boolean hasHitZombie(Tile t){
         Zombie zombie = t.highestPosition();
-        if(getPosition() + Tile.getTileLength() - zombie.getPosition() >= Tile.getTileLength()){
+        if(getPosition()  >=  zombie.getPosition() - 0.3  ){ 
             hit(zombie);
             return true;
         }
@@ -153,5 +159,13 @@ public class Projectile {
 
     public String getType(){
         return type;
+    }
+
+    public double getSize(){
+        return size;
+    }
+
+    public double getPositionY(){
+        return positionY;
     }
 }

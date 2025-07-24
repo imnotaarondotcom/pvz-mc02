@@ -45,6 +45,8 @@ public class Zombie {
     // state the zombie is in (Attacking , Moving)
     private String state;
 
+    private double size;
+
 
     // modifier for special zombies (flag for flag zombie, cone for cone zombie, modifier = "" for normal zombie)
     private String modifier;
@@ -59,6 +61,7 @@ public class Zombie {
      */
     public Zombie(int laneNo, int tileNo, String modifier)
     {
+        size = 1;
         this.tileNo = tileNo;
         this.laneNo = laneNo ;
         
@@ -67,7 +70,7 @@ public class Zombie {
         DAMAGE = 100;
         timeSinceLastAttack = 0;
         health = 270;
-        position = 0;
+        position = 1;
 
         this.modifier = modifier;
         type = "zombie";
@@ -90,7 +93,7 @@ public class Zombie {
     public void move()
     {
         updateState("walk");
-        this.resetPosition(position % Tile.getTileLength()); // Carry over fractional position to next tile
+        this.resetPosition( Tile.getTileLength() - position); // Carry over fractional position to next tile
         tileNo = tileNo - 1; // Move to the previous tile (towards the house)
     }
 
@@ -103,7 +106,7 @@ public class Zombie {
     public boolean isReadyToMove(double elapsedTime)
     {
         this.updatePosition(elapsedTime);
-        return position >= Tile.getTileLength();
+        return position <= 0;
     }
     
 
@@ -258,7 +261,7 @@ public class Zombie {
      * @param elapsedTime The time elapsed since the last update in seconds.
      */
     public void updatePosition(double elapsedTime){
-        position += SPEED * elapsedTime;
+        position -= SPEED * elapsedTime;
     }
 
     /**
@@ -346,6 +349,10 @@ public class Zombie {
 
     public String getModifier(){
         return modifier;
+    }
+
+    public double getSize(){
+        return size;
     }
 
     /**

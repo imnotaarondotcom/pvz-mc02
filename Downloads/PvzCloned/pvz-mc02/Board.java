@@ -318,7 +318,10 @@ public class Board {
                     } else { // If no plant, then update position of the zombie
                         if(zombie.isReadyToMove(timeElapsed)){
                             
-                            if(zombie.getTileNo() == 0){ 
+                            if(tileNo == 0){ 
+
+                                zombie.updatePosition(timeElapsed * 5);
+
                                 GameClock.printTime();
                                 System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
                                 System.out.println("*** GAME OVER | ZOMBIES WIN ***");
@@ -386,7 +389,7 @@ public class Board {
                 while(zIterator.hasNext()) 
                 {  
                     zombie = zIterator.next();  
-                    tempEntity = new Entity(zombie.getType(), zombie.getModifier(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition());
+                    tempEntity = new Entity(zombie.getType(), zombie.getModifier(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition(), zombie.getSize());
                     entities.add(tempEntity);
                 }
 
@@ -394,7 +397,7 @@ public class Board {
                 while(sIterator.hasNext())
                 {
                     sun = sIterator.next();
-                    tempEntity = new Entity(sun.getName(), "", sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition());
+                    tempEntity = new Entity(sun.getName(), "", sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition(), sun.getSize(), sun.getPositionY());
                     entities.add(tempEntity);
                 }
 
@@ -402,13 +405,15 @@ public class Board {
                 while(projIterator.hasNext()) 
                 {  
                     projectile = projIterator.next();  
-                    tempEntity = new Entity(projectile.getType(), "", projectile.getState(), projectile.getLaneNo(), projectile.getTileNo(), projectile.getPosition());
+                    tempEntity = new Entity(projectile.getType(), "", projectile.getState(), projectile.getLaneNo(), 
+                        projectile.getTileNo(), projectile.getPosition(), projectile.getSize() , projectile.getPositionY());
+                        
                     entities.add(tempEntity);
                 }
 
                 if(plant != null)
                 {
-                    tempEntity = new Entity(plant.getName(), "", plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition());
+                    tempEntity = new Entity(plant.getName(), "", plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition(), plant.getSize());
                     entities.add(tempEntity);
                 }
             }

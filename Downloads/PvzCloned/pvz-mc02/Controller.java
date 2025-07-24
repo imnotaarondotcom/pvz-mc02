@@ -49,7 +49,7 @@ public class Controller  extends MouseAdapter{
         System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
 
         player.collectSun(board.getTile(laneNo, tileNo).getSunList());
-        
+        plantNo = 0;
     }
 
     

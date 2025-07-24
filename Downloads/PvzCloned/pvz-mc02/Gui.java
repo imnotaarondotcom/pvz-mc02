@@ -173,14 +173,14 @@ public class Gui extends JPanel  {
             while(entIterator.hasNext())
             {
                 entity = entIterator.next();
-                x = (int)(tileX * entity.getTileNo() - entity.getPosition() * tileX  );
-                y = tileY * entity.getLaneNo();
+                x = (int)(tileX * entity.getTileNo() + entity.getPosition() * tileX  );
+                y = tileY * entity.getLaneNo() + (int)(tileY * entity.getPositionY());
 
                 animation = animations.getAnimation(entity.getType(), entity.getModifier(), entity.getState());
                     
                 if (animation != null)
                 {
-                    g2.drawImage(animation[currentFrame % animation.length ], x, y, (int)(tileX), (int)(tileY), null);          
+                    g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);          
                 }
                 else
                 {

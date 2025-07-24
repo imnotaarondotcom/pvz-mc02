@@ -29,6 +29,8 @@ public abstract class Plant {
     protected String state;
     // what part of the tile plant is placed
     private double position;
+
+    private double size;
     
     /**
      * Constructs a new Plant object.
@@ -46,6 +48,7 @@ public abstract class Plant {
         TILE_NO = tile;
         state = "idle";
         position = 0;
+        size = 1;
     }
 
     /**
@@ -137,5 +140,9 @@ public abstract class Plant {
 
     public String getState(){
         return state;
+    }
+
+    public double getSize(){
+        return size;
     }
 }

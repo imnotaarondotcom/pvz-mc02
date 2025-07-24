@@ -36,6 +36,7 @@ public class Player {
                             userTile.placePlant(new Peashooter(userTile.getLaneNo(), userTile.getTileNo()));
                             totalSun -= Peashooter.getCost();
                             Peashooter.setTimeSinceLastPlant(currentTime); // Reset Peashooter's planting cooldown
+                            System.out.println("total sun is" + totalSun);
                         } else if (userTile != null) {
                             System.out.println("Tile is occupied!");
                         }
@@ -82,7 +83,7 @@ public class Player {
         int collectedSun = 0;
         if(sun.size() != 0){ // Check if there's any sun to collect
             while(sun.size() != 0){ // Continue as long as there's sun in the list
-                totalSun += Sun.getValue(); // Add sun value to player's total
+                
                 collectedSun += Sun.getValue(); // Add to current collection count
                 sun.remove(sun.size() - 1); // Remove collected sun from the list
             }
