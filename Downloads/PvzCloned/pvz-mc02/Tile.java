@@ -55,7 +55,7 @@ public class Tile {
         if(TILE_NO == PvZDriver.getMaxTiles() - 1){ // Check if this is the designated spawn tile
 
             // ZOMBIE TO BE SPAWNED
-            Zombie z = new Zombie(laneNo, tileNo , "flag");
+            Zombie z = new Zombie(laneNo, tileNo, "flag");
             
             GameClock.printTime();
             placeZombie(z);
@@ -129,8 +129,10 @@ public class Tile {
      * This is useful for determining which zombie a plant should target first.
      * @return The zombie with the highest position, or null if no zombies are present.
      */
-    public Zombie highestPosition(){
-        if (zombies.isEmpty()) { // Check if the list is empty first
+    public Zombie highestPosition()
+    {
+        if (zombies.isEmpty()) // Check if the list is empty first
+        { 
             return null;
         }
         

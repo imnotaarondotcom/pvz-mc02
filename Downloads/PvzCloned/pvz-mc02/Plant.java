@@ -92,10 +92,14 @@ public abstract class Plant {
      * @param tile An array of {@link Tile} objects representing the lane.
      * @return True if there are no zombies in the lane, false otherwise.
      */
-    public boolean isLaneClear(Tile[] tile){
+    public boolean isLaneClear(Tile[] tile)
+    {
         // Iterates through all tiles in the lane to check for zombies.
-        for(int t = 0; t < PvZDriver.getMaxTiles(); t++ ){
-            if(!(tile[t].noZombies() == 0)){ // If a tile is not empty (contains zombies)
+        for(int t = 0; t < PvZDriver.getMaxTiles(); t++ )
+        {
+            // If a tile is not empty (contains zombies)
+            if(!(tile[t].noZombies() == 0))
+            { 
                 return false;
             }    
         }

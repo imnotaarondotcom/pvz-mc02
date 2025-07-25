@@ -9,38 +9,32 @@ import java.time.Duration;
  * @version 1.0
  * @since 2025-06-27
  */
-public class GameClock {
-    /** Stores the starting or reference point in time for the game clock. */
-    private static Instant time;
+public class GameClock 
+{
+    private static double totalElapsedSeconds = 0.0;
 
-    /** Initializes the game clock, setting its start time to the current moment. */
-    public GameClock(){
-        time = Instant.now();
+    public static int getTotalTimeSecondsInt()
+    {
+        return (int) totalElapsedSeconds;
+    }
+
+    public static double getTotalTimeSecondsDouble()
+    {
+        return totalElapsedSeconds;
+    }
+
+    public static void addTime(double deltaSeconds)
+    {
+        totalElapsedSeconds += deltaSeconds;
     }
 
     /**
-     * Retrieves the elapsed time in seconds since the clock was initialized.
-     * @return Elapsed time in seconds, or 0 if clock uninitialized.
+     * Prints the total elapsed game time in [MM:SS] format to the console.
      */
-    public static int getTime(){
-        if(time != null) {
-            return (int)Duration.between(time, Instant.now()).toSeconds();
-        } else {
-            System.out.println("Clock not initialized.");
-            return 0;
-        }
-    }
-
-    /** Resets the game clock to the current moment, restarting the timer from zero. */
-    public static void setTime(){
-        time = Instant.now();
-    }
-
-    /**
-     * Prints the elapsed game time in [MM:SS] format to the console.
-     */
-    public static void printTime(){
-        int totalSeconds = getTime();
-        System.out.printf("[%02d:%02d] ", totalSeconds / 60 , totalSeconds % 60);
+    public static void printTime()
+    {
+        int minutes = (int) totalElapsedSeconds / 60;
+        int seconds = (int) totalElapsedSeconds & 60;
+        System.out.printf("[%02d:%02d] ", minutes, seconds);
     }
 }

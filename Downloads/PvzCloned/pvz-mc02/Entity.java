@@ -14,7 +14,7 @@ public  class Entity
     private String modifier; // (cone, flag, bucket, pole, etc)
     
 
-    public Entity(String type, String modifier, String state, int laneNo, int tileNo, double position , double size )
+    public Entity(String type, String modifier, String state, int laneNo, int tileNo, double position , double size)
     {
         positionY = 0;
         this.type = type;
@@ -26,6 +26,7 @@ public  class Entity
         this.size = size;
     }
 
+    // Entity for projectile
     public Entity(String type, String modifier, String state, int laneNo, int tileNo, double position , double size, double positionY )
     {
         this(type, modifier, state, laneNo, tileNo, position, size);

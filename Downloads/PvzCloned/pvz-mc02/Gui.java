@@ -26,20 +26,55 @@ public class Gui extends JPanel  {
 
     public Gui()
     {
-        init();
+        initializeGui();
     }
 
-
-    public void init()
+    public void initializeGui()
     {
         animations = new AnimationManager();
+        initializeAnimations(animations);
 
+        noBorders = 6;
+
+        topPanelHeight = 200;
+        screenHeight = 1080 ;
+        screenWidth = 1920;
+
+        frameCount = 0;
+        currentFrame = 0;
+
+        frame = new JFrame("Plants Vs Zombies");
+        frame.setSize(screenWidth, screenHeight);
+
+        setBackground(Color.black);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
+        frame.setResizable(false);   
+
+
+        // creates the panel above the board
+        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
+       
+        frame.add(topPanel);
+
+
+        this.setLayout(new BorderLayout());
+
+
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(topPanel, BorderLayout.NORTH);
+        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
+        frame.add(this, BorderLayout.CENTER );
+        frame.setVisible(true);
+    }
+
+    public void initializeAnimations(AnimationManager animations)
+    {
         // Environment
         animations.loadImages("environment", "Grass", 2);
 
         // Icons
         animations.loadAnimation("icons", "sun_idle", 1);
-
 
         // Normal Zombie animations
         // walk
@@ -78,11 +113,6 @@ public class Gui extends JPanel  {
         // Peashooter idle animation
         animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
 
-        //cherry bomb idle animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
-        //cherry bomb explode animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
-
         // Sunflower idle animation
         animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
 
@@ -92,40 +122,11 @@ public class Gui extends JPanel  {
         // Pea hit animation
         animations.loadAnimation("plants/peashooter", "pea_hit", 2);
 
-        noBorders = 6;
+        // Cherry bomb idle animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
 
-        topPanelHeight = 200;
-        screenHeight = 1080 ;
-        screenWidth = 1920;
-
-        frameCount = 0;
-        currentFrame = 0;
-
-
-
-        frame = new JFrame("Plants Vs Zombies");
-        frame.setSize(screenWidth, screenHeight);
-
-        setBackground(Color.black);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
-        frame.setResizable(false);   
-
-
-        // creates the panel above the board
-        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
-       
-        frame.add(topPanel);
-
-
-        this.setLayout(new BorderLayout());
-
-
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(topPanel, BorderLayout.NORTH);
-        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
-        frame.add(this, BorderLayout.CENTER );
-        frame.setVisible(true);
+        // Cherry bomb explode animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
     }
 
 
@@ -154,12 +155,9 @@ public class Gui extends JPanel  {
         for(row = 0;  row < noLanes;  row++){
             for(col = 0; col < noTiles; col++){
                  tiles = animations.getImages("Grass");  
-                if(tiles != null){
-                  
-
-                    
+                if(tiles != null)
+                {   
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
-
                     if((col + row) % 2 == 0)
                     {
                       g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
@@ -186,9 +184,12 @@ public class Gui extends JPanel  {
                 if (animation != null)
                 {
                     if(!entity.getType().equals("zombie") && !entity.getType().equals("pea"))
-                        g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
-                    else{
-                        g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
+                    {
+                        g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)((tileX) * entity.getSize()), (int)((tileY) * entity.getSize()) , null);  
+                    }
+                    else
+                    {
+                        g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)((tileX) * entity.getSize()), (int)((tileY) * entity.getSize()) , null);  
                     }
                 }
                 else
@@ -302,6 +303,4 @@ public class Gui extends JPanel  {
 
     private PlantSelectionPanel topPanel;
     private int noBorders;
-  
-  
 }
