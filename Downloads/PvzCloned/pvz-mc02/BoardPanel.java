@@ -21,12 +21,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Gui extends JPanel  {
+public class BoardPanel extends JPanel  {
     
 
-    public Gui()
+    public BoardPanel(int topPanelHeight, int screenHeight, int screenWidth)
     {
         init();
+    
     }
 
 
@@ -103,31 +104,8 @@ public class Gui extends JPanel  {
 
 
 
-        frame = new JFrame("Plants Vs Zombies");
-        frame.setSize(screenWidth, screenHeight);
-
-        setBackground(Color.black);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
-        frame.setResizable(false);   
-
-
-        // creates the panel above the board
-        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
-       
-        frame.add(topPanel);
-
-
-        this.setLayout(new BorderLayout());
-
-
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(topPanel, BorderLayout.NORTH);
-        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
-        frame.add(this, BorderLayout.CENTER );
-        frame.setVisible(true);
+        
     }
-
 
      
     public void setMouseListener(MouseListener board, MouseListener selection){
@@ -174,18 +152,18 @@ public class Gui extends JPanel  {
         {
             entIterator = entities.iterator();
             BufferedImage[] animation;
-            toggle = !(toggle);
+           
             while(entIterator.hasNext())
             {
                 entity = entIterator.next();
                 x = (int)(tileX * entity.getTileNo() + entity.getPosition() * tileX  );
                 y = tileY * entity.getLaneNo() + (int)(tileY * entity.getPositionY());
 
-                animation = animations.getAnimation(entity.getType(), entity.getModifier(), entity.getState());
+                animation = animations.getAnimation(entity.getType(), entity.getState());
                     
                 if (animation != null)
                 {
-                    if(!entity.getType().equals("zombie") && !entity.getType().equals("pea"))
+                    if( !entity.getType().equals("pea"))
                         g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
                     else{
                         g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
@@ -274,8 +252,12 @@ public class Gui extends JPanel  {
         topPanel.updateSunCount(sunCount);
     }
 
-    private int x;
-    private boolean toggle; // temps
+    public void updateCooldownState(ArrayList<Boolean> cdList){
+        topPanel.updateCooldownState(cdList);
+        topPanel.repaint();
+    }
+    
+ 
 
     private int noTiles;
     private int noLanes;
@@ -292,7 +274,7 @@ public class Gui extends JPanel  {
     private int boardHeight;
     private int boardWidth;
 
-    private JFrame frame ;
+    
     
 
     private int frameCount;
@@ -302,6 +284,6 @@ public class Gui extends JPanel  {
 
     private PlantSelectionPanel topPanel;
     private int noBorders;
-  
+   
   
 }

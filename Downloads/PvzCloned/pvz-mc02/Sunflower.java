@@ -20,6 +20,8 @@ public class Sunflower extends Plant {
     /** Timestamp of the last Sunflower planted, for cooldown tracking. */
     private static double timeSinceLastPlant = -7.5;
 
+    private boolean hasProduced;
+
     /**
      * Constructs a Sunflower.
      * @param l Lane number for placement.
@@ -28,6 +30,7 @@ public class Sunflower extends Plant {
     public Sunflower(int l , int t){
         // Calls superclass constructor (Plant's name, speed, health, lane, tile)
         super("sunflower", 24, 300, l, t);
+        hasProduced = false;
     }
 
     /**
@@ -53,6 +56,13 @@ public class Sunflower extends Plant {
         if(timeSinceLastAttack >= SPEED){
             action(b);
             timeSinceLastAttack = 0;
+        }
+        else if(!hasProduced){
+            if(timeSinceLastAttack >= SPEED / 3){
+            action(b);
+            timeSinceLastAttack = 0;
+            hasProduced = true;
+            }
         }
     }
 

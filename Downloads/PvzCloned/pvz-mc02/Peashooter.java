@@ -37,8 +37,8 @@ public class Peashooter extends Plant {
         // Calls superclass constructor (Plant's name, speed, health, lane, tile)
         super("peashooter", 1.425, 300, l ,t);
      
-        DAMAGE = 20;
-        DIRECTDAMAGE = 10;
+        DAMAGE = 25;
+        DIRECTDAMAGE = 15;
         DAMAGEFALLOFF = 1;
         updateState("idle");
     }

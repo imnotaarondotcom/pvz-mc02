@@ -52,7 +52,7 @@ public class Projectile {
         size = 0.25;
         DAMAGE = d;
         position = 0.8; // Projectiles start at the beginning of their tile
-        SPEED = 0.5; // Fixed speed of 2 tiles per second
+        SPEED = 3; // Fixed speed of 2 tiles per second
         tileNo = t;
         laneNo = l;
         DAMAGEFALLOFF = df;
@@ -118,7 +118,7 @@ public class Projectile {
      * @return True if the projectile is in the last tile, false otherwise.
      */
     public boolean inLastTile(){
-        return tileNo == PvZDriver.getMaxTiles();
+        return tileNo == Board.getMaxTiles();
     }
 
     /**

@@ -7,12 +7,17 @@ public class Board {
         MAX_LANES = l;
         MAX_TILES = t;
         lane = new Tile[MAX_LANES][MAX_TILES];
-        initialize();
         tilePicker = new Random();
+        level = 1;
+        initialize();
         
     }
 
     public void initialize(){
+        armorManager = new ArmorManager();
+        armorManager.loadLevelData(level);
+
+
         int i = 0;
         int tile = 0 ;
         for(i = 0 ; i < MAX_LANES; i++){
@@ -24,12 +29,22 @@ public class Board {
         }
     }
 
-    public boolean updateBoard(double timeElapsed){
+    
+
+    public boolean updateBoard(double timeElapsed , int gameTime){
         updatePlants(timeElapsed);
         updateProjectiles(timeElapsed);
         if(updateZombies(timeElapsed)){
+            winner = "zombies";
             return true;
         }
+        else if(gameTime >= 180 ){
+            winner = "player";
+            nextLevel();
+            GameClock.printTime();
+            System.out.println("Player Wins");
+            return true;    
+        } 
         return false;
     }
 
@@ -46,27 +61,27 @@ public class Board {
         int laneNo;
         
         
-        laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes()); // Randomly pick a lane for the zombie
+        laneNo = tilePicker.nextInt(getMaxLanes()); // Randomly pick a lane for the zombie
 
         if(gameTime >= 10 && gameTime <= 80){
             if(gameTime % 10 == 0 && lastZombieSpawnTime != gameTime){
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1);
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1 , armorManager.getArmor());
                 return true;
             }
         } else if(gameTime >= 81 && gameTime <= 140 ){
             if(gameTime % 5 == 0 && lastZombieSpawnTime != gameTime){
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1 );
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1 ,  armorManager.getArmor());
                 return true;
             }
         } else if(gameTime > 140 && gameTime <= 170){
             if(gameTime % 3 == 0 && lastZombieSpawnTime != gameTime){
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 );
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 ,  armorManager.getArmor());
                 return true;
             }
         } else if(gameTime > 170 && lastZombieSpawnTime <= 170 ){
-            for(i = 0; i < 5 + (PvZDriver.getLevel() - 1) * 2; i++){
-                laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
-                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 );
+            for(i = 0; i < 5 + (getLevel() - 1) * 2; i++){
+                laneNo = tilePicker.nextInt(getMaxLanes());
+                lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 ,  armorManager.getArmor());
             }
             return true;
         }
@@ -85,8 +100,8 @@ public class Board {
         int tileNo;
         int laneNo;
     
-        tileNo = tilePicker.nextInt(PvZDriver.getMaxTiles());
-        laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
+        tileNo = tilePicker.nextInt(getMaxTiles());
+        laneNo = tilePicker.nextInt(getMaxLanes());
 
         if(gameTime % 8 == 0 && lastSunSpawnTime != gameTime){
             Sun newSun = new Sun(laneNo, tileNo);
@@ -103,9 +118,9 @@ public class Board {
         int tileNo = 0;
         Tile currentTile;
         Plant plant;
-        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++)
+        for(laneNo = 0; laneNo <getMaxLanes(); laneNo++)
         {
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++)
+            for(tileNo = 0; tileNo < getMaxTiles(); tileNo++)
             {
                 plant = lane[laneNo][tileNo].getPlant();
                 currentTile = lane[laneNo][tileNo];
@@ -123,56 +138,7 @@ public class Board {
         } 
     }
 
- /*unedited   public void updateProjectiles(double timeElapsed){
-
-        int laneNo = 0;
-        int tileNo = 0;
-        Tile currentTile;
-        Iterator<Projectile> iterator;
-        ArrayList<Projectile> projectiles;
-        Projectile projectile;
-        Zombie zombie;
-
-        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
-                currentTile = lane[laneNo][tileNo];  
-                
-                projectiles = lane[laneNo][tileNo].getProjectiles();
-                iterator = projectiles.iterator();
-                
-                while(iterator.hasNext()){
-                    projectile = iterator.next();
-                    
-                    if(currentTile.hasZombie()){
-                        zombie = currentTile.highestPosition();
-                        if(projectile.getPosition() + Tile.getTileLength() - zombie.getPosition() >= Tile.getTileLength()){
-                            projectile.hit(zombie);
-                            iterator.remove();
-                            if(zombie.getHealth() <= 0){
-                                currentTile.removeZombie(zombie);
-                                GameClock.printTime();
-                                System.out.printf("Zombie died at lane %d tile %d\n", zombie.getLaneNo() + 1, zombie.getTileNo() + 1);
-                            }
-                        } else {
-                            projectile.updatePosition(timeElapsed);
-                        }
-                    } else {
-                        if(projectile.isReadyToMove(timeElapsed)){
-                            if(projectile.getTileNo() < MAX_TILES){
-                                iterator.remove();
-                                lane[laneNo][projectile.getTileNo()].placeProjectile(projectile);
-                            } else {
-                                iterator.remove();
-                            }
-                        } else {
-                            projectile.updatePosition(timeElapsed);
-                        }
-                    }
-                }
-            }
-        }
-    }
-*/ 
+ 
     public void updateProjectiles(double timeElapsed){
 
         int laneNo = 0;
@@ -183,8 +149,8 @@ public class Board {
         Projectile projectile;
         
 
-        for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+        for(laneNo = 0; laneNo < getMaxLanes(); laneNo++){
+            for(tileNo = 0; tileNo < getMaxTiles(); tileNo++){
                 currentTile = lane[laneNo][tileNo];  
                 
                 projectiles = lane[laneNo][tileNo].getProjectiles();
@@ -300,8 +266,8 @@ public class Board {
         Zombie zombie;
         Plant plant;
         
-         for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+         for(laneNo = 0; laneNo < getMaxLanes(); laneNo++){
+            for(tileNo = 0; tileNo < getMaxTiles(); tileNo++){
                 zombies = lane[laneNo][tileNo].getZombies();
                 plant = lane[laneNo][tileNo].getPlant();    
                        
@@ -358,17 +324,7 @@ public class Board {
         return false;
     }
 
-    public Tile[][] getLanes(){
-        return this.lane;
-    }
-
-    public int getMaxLanes(){
-        return MAX_LANES;
-    }
-
-    public int getMaxTiles(){
-        return MAX_TILES;
-    }
+ 
 
     public ArrayList<Entity> getEntities(){
         ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -396,15 +352,7 @@ public class Board {
                 while(zIterator.hasNext()) 
                 {  
                     zombie = zIterator.next();  
-                    tempEntity = new Entity(zombie.getType(), zombie.getModifier(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition(), zombie.getSize());
-                    entities.add(tempEntity);
-                }
-
-                // iterator for each sun
-                while(sIterator.hasNext())
-                {
-                    sun = sIterator.next();
-                    tempEntity = new Entity(sun.getName(), "", sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition(), sun.getSize(), sun.getPositionY());
+                    tempEntity = new Entity(zombie.getType(), zombie.getState(), zombie.getLaneNo(), zombie.getTileNo(), zombie.getPosition(), zombie.getSize());
                     entities.add(tempEntity);
                 }
 
@@ -412,7 +360,7 @@ public class Board {
                 while(projIterator.hasNext()) 
                 {  
                     projectile = projIterator.next();  
-                    tempEntity = new Entity(projectile.getType(), "", projectile.getState(), projectile.getLaneNo(), 
+                    tempEntity = new Entity(projectile.getType(), projectile.getState(), projectile.getLaneNo(), 
                         projectile.getTileNo(), projectile.getPosition(), projectile.getSize() , projectile.getPositionY());
                         
                     entities.add(tempEntity);
@@ -420,7 +368,15 @@ public class Board {
 
                 if(plant != null)
                 {
-                    tempEntity = new Entity(plant.getName(), "", plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition(), plant.getSize());
+                    tempEntity = new Entity(plant.getName(), plant.getState(), plant.getLaneNo(), plant.getTileNo(), plant.getPosition(), plant.getSize());
+                    entities.add(tempEntity);
+                }
+
+                 // iterator for each sun
+                while(sIterator.hasNext())
+                {
+                    sun = sIterator.next();
+                    tempEntity = new Entity(sun.getName(), sun.getState(),sun.getLaneNo(), sun.getTileNo(), sun.getPosition(), sun.getSize(), sun.getPositionY());
                     entities.add(tempEntity);
                 }
             }
@@ -437,9 +393,48 @@ public class Board {
         return lane[l];
     }
 
-    private int MAX_TILES;
-    private int MAX_LANES;
+    public void nextLevel(){
+        level += 1;
+    }
+
+    public void setMaxLanes(int l){
+        MAX_LANES = l;
+    }
+
+    public void setMaxTiles(int t){
+        MAX_TILES = t;
+    }
+
+    public String getWinner(){
+        return winner;
+    }
+
+    public int getLevel(){
+        return level;
+    }
+   public Tile[][] getLanes(){
+        return this.lane;
+    }
+
+    public static int getMaxLanes(){
+        return MAX_LANES;
+    }
+
+    public static int getMaxTiles(){
+        return MAX_TILES;
+    }
+   
+
+
+
+    private static int MAX_TILES;
+    private static int MAX_LANES;
     private Tile[][] lane;
     private Random tilePicker;
+    private int level;
+    private String winner;
+    private ArmorManager armorManager;
+    
+    
 
 }

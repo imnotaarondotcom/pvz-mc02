@@ -91,9 +91,9 @@ public class AnimationManager {
      * @param animation
      * @return
      */
-    public BufferedImage[] getAnimation(String entity, String modifier, String animation)
+    public BufferedImage[] getAnimation(String entity,  String animation)
     {
-        String fileKey = entity + modifier + "_" + animation;
+        String fileKey = entity + "_" + animation;
         
         if(sprites.containsKey(fileKey))
         {

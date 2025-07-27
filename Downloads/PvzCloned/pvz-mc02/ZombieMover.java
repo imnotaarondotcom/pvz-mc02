@@ -42,9 +42,9 @@ public class ZombieMover implements Runnable {
 
             // Iterate through each lane
             int laneNo, tileNo;
-            for (laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++) {
+            for (laneNo = 0; laneNo < Board.getMaxLanes(); laneNo++) {
                 // Iterate tiles from right to left (where zombies are) to handle movement correctly
-                for (tileNo = PvZDriver.getMaxTiles() - 1; tileNo >= 0; tileNo--) {
+                for (tileNo = Board.getMaxTiles() - 1; tileNo >= 0; tileNo--) {
                     Tile currentTile = lane[laneNo][tileNo];
                     ArrayList<Zombie> zombiesOnTile = currentTile.getZombies();
                     

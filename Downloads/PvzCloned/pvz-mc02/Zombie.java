@@ -19,7 +19,7 @@ public class Zombie {
     private final double ATTACK_SPEED;
 
     /** The speed at which the zombie moves across a tile (units per second). */
-    private final double SPEED;
+    private  double SPEED;
 
     /** The damage inflicted by the zombie per attack. */
     private final int DAMAGE;
@@ -48,10 +48,11 @@ public class Zombie {
     private double size;
 
 
-    // modifier for special zombies (flag for flag zombie, cone for cone zombie, modifier = "" for normal zombie)
-    private String modifier;
 
-    private int armor;
+
+    private Armor armor;
+
+    
 
     /**
      * Constructs a new Zombie object.
@@ -59,29 +60,23 @@ public class Zombie {
      * @param laneNo The lane index (row) the zombie will occupy.
      * @param tileNo The tile index (column) the zombie will occupy.
      */
-    public Zombie(int laneNo, int tileNo, String modifier)
+    public Zombie(int laneNo, int tileNo, Armor armor)
     {
         size = 1;
         this.tileNo = tileNo ;
         this.laneNo = laneNo ;
-        
+        this.armor = armor;
         ATTACK_SPEED = 1;
-        SPEED = 0.20; // seconds to pass one tile
+        SPEED = 0.2; // tiles passes per second
         DAMAGE = 100;
         timeSinceLastAttack = 0;
         health = 270;
         position = 1;
 
-        this.modifier = modifier;
+      //  this.modifier = modifier;
         type = "zombie";
-        if (this.modifier == "cone")
-        {
-            armor = 370;
-        }
-        else
-        {
-            armor = 0;
-        }
+        equipArmor();
+        
 
         state = "walkA"; // walkA = zombie w/ full body, walkB = zombie w/ lost leg, etc.
     }
@@ -105,6 +100,7 @@ public class Zombie {
      */
     public boolean isReadyToMove(double elapsedTime)
     {
+        updateState("walk");
         this.updatePosition(elapsedTime);
         return position <= 0;
     }
@@ -149,16 +145,22 @@ public class Zombie {
      */
     public void takeDamage(int damage)
     {
-        if (armor > 0)
+        if (armor != null && armor.isHittable())
         {
-            armor -= damage;
-            updateModifier();
+            armor.takeDamage(damage);
+            armor.updateState();
+            if(armor.getHealth() <= 0){
+                health += armor.getHealth(); // takes the extra damage if armor breaks 
+                armor = null;
+                
+            }
         }
         else
         {
             health -= damage;
-            updateModifier();
         }
+
+        
 
         GameClock.printTime();
         System.out.printf("Zombie at lane %d tile %d hit. Updated health: %d\n",
@@ -171,89 +173,48 @@ public class Zombie {
     public void updateModifier()
     {
         // Conehead loses its cone
-        if (modifier == "cone")
-        {
-            if (armor <= 0)
-            {
-                modifier = "";
-            }
-        }
-
-        // Flag zombie loses its flag
-        if (health <= 90)
-        {
-            modifier = "";
-        }
+     
     }
 
     // Updates the state of the zombie
     public void updateState(String stateType)
     {
         // if walking
-        if (stateType == "walk")
-        {
-            if (modifier == "cone")
-            {
-                if (armor > 240)
-                {
-                    state = "walkA"; // Perfect cone
-                }
-                else if (armor > 110 && armor <= 240)
-                {
-                    state = "walkB"; // Damaged cone
-                }
-                else if (armor <= 110 && armor > 0)
-                {
-                    state = "walkC"; // Really damaged cone
-                }
-            }
+ 
+        if(armor == null || !armor.isHittable() ){
 
+            if(armor == null){  // armor like flag is not removable
+                type = "zombie";
+            }
+            
             if (health > 180) 
             {
-                state = "walkA"; // full zombie
+                state = stateType.concat("A"); // full zombie
             }
-            else if (health > 90 && health <= 180)
+            else if (health > 30 && health <= 180)
             {
-                state = "walkB"; // lost arm
+                state = stateType.concat("B"); // lost arm
             }
             else 
             {
-                state = "walkC"; // lost head
+                state = stateType.concat("C"); // lost head
+                armor = null;
             }
         }
-
-        // if eating
-        if (stateType == "eat")
-        {
-            if (modifier == "cone")
-            {
-                if (armor > 240)
-                {
-                    state = "eatA"; // Perfect cone
-                }
-                else if (armor > 110 && armor <= 240)
-                {
-                    state = "eatB"; // Damaged cone
-                }
-                else if (armor <= 110 && armor > 0)
-                {
-                    state = "eatC"; // Really damaged cone
-                }
-            }
-
-            if (health > 180) 
-            {
-                state = "eatA"; // full zombie
-            }
-            else if (health > 90 && health <= 180)
-            {
-                state = "eatB"; // lost arm
-            }
-            else 
-            {
-                state = "eatC"; // lost head
-            }
+        else{
+            state = stateType.concat(armor.getState());
         }
+        
+    }
+
+
+    public void equipArmor(){
+        if(armor != null){
+            type = type.concat(armor.getName());
+            state = "walkA";
+            SPEED += armor.getSpeedBuff();
+        }
+        
     }
 
     /**
@@ -347,10 +308,7 @@ public class Zombie {
         return type;
     }
 
-    public String getModifier(){
-        return modifier;
-    }
-
+   
     public double getSize(){
         return size;
     }

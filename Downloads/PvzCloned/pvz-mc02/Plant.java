@@ -94,7 +94,7 @@ public abstract class Plant {
      */
     public boolean isLaneClear(Tile[] tile){
         // Iterates through all tiles in the lane to check for zombies.
-        for(int t = 0; t < PvZDriver.getMaxTiles(); t++ ){
+        for(int t = 0; t < Board.getMaxTiles(); t++ ){
             if(!(tile[t].noZombies() == 0)){ // If a tile is not empty (contains zombies)
                 return false;
             }    

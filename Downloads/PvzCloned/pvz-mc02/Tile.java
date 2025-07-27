@@ -50,12 +50,13 @@ public class Tile {
      * This method is typically called only for initial wave spawning.
      * @param laneNo The lane number for the new zombie.
      * @param tileNo The tile number for the new zombie.
+     * @param zombieType type of zombie to be placed
      */
-    public void spawnZombie(int laneNo, int tileNo){
-        if(TILE_NO == PvZDriver.getMaxTiles() - 1){ // Check if this is the designated spawn tile
+    public void spawnZombie(int laneNo, int tileNo, Armor armor){
+        if(TILE_NO == Board.getMaxTiles() - 1){ // Check if this is the designated spawn tile
 
             // ZOMBIE TO BE SPAWNED
-            Zombie z = new Zombie(laneNo, tileNo , "flag");
+            Zombie z = new Zombie(laneNo, tileNo , armor);
             
             GameClock.printTime();
             placeZombie(z);

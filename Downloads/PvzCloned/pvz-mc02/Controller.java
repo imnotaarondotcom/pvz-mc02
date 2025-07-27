@@ -8,13 +8,14 @@ import java.util.Scanner;
 
 
 
-public class Controller  extends MouseAdapter{
+public class Controller  extends MouseAdapter implements ActionListener {
     
-    public Controller(Gui g , Board b){
+    public Controller(PvzGui g , Board b){
         player = new Player(b);
         gui = g;
         board = b;
         addMouseListener();
+        setActionListener();
     }
 
     // anonymous method
@@ -34,20 +35,37 @@ public class Controller  extends MouseAdapter{
         gui.setMouseListener(this , selection);
     }
 
+    public void setActionListener(){
+        gui.setActionListener(this);
+    }
+
+     @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("Restart"))
+        System.out.println("pressed");
+    }
+
+
        @Override
     public void mousePressed(MouseEvent e){
-        int laneNo = (int) e.getY()  / gui.getTileY();
-        int tileNo = (int) e.getX() / gui.getTileX() ;
+        BoardPanel boardPanel = gui.getBoardPanel();
+
+        int laneNo = (int) e.getY()  / boardPanel.getTileY();
+        int tileNo = (int) e.getX() / boardPanel.getTileX() ;
   
             player.tryToplacePlant(plantNo, laneNo, tileNo);
             //board.getTile(laneNo,tileNo).placePlant(new Peashooter(laneNo, tileNo));
         
 
-        System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / gui.getTileY() + 1, (int) e.getX() / gui.getTileX() + 1);
+        System.out.printf("Lane %d, TIle %d\n", (int) e.getY()  / boardPanel.getTileY() + 1, (int) e.getX() / boardPanel.getTileX() + 1);
 
         player.collectSun(board.getTile(laneNo, tileNo).getSunList());
         gui.updateSunCount(player.getTotalSun());
         plantNo = 0;
+    }
+
+    public void updateSelectionPanel(){
+
     }
 
     
@@ -65,10 +83,10 @@ public class Controller  extends MouseAdapter{
         startTime = System.currentTimeMillis();
 
        
-        gui.setBoardSize(board.getMaxLanes(), board.getMaxTiles());
-       
-       
+        gui.getBoardPanel().setBoardSize(Board.getMaxLanes(), Board.getMaxTiles());
         
+       
+  
         Thread inputThread = new Thread( new PlayerThread(board));
         inputThread.setDaemon(true);
         inputThread.start();
@@ -76,10 +94,9 @@ public class Controller  extends MouseAdapter{
         
 
         while(!updateModel()){ 
-            gui.setEntities(board.getEntities());
-            gui.updateSunCount(player.getTotalSun());
-        
-            gui.repaint();
+            gui.getBoardPanel().setEntities(board.getEntities());
+            gui.updateCooldownState(player.getCooldownState());
+            gui.updateView(board.getEntities(), player.getCooldownState(), player.getTotalSun());
             
         }
        
@@ -94,44 +111,41 @@ public class Controller  extends MouseAdapter{
     public boolean updateModel(){
         boolean gameOver = false;
         long currentTime = System.currentTimeMillis();
-            double timeElapsed = (double)(currentTime - lastBoardUpdate)/1000.0;
-            int gameTime = (int) ((currentTime - startTime) / 1000.0);
-            
-            if(board.tryToSpawn(gameTime, lastZombieSpawnTime)){
-                lastZombieSpawnTime = gameTime;
-            }
-            if(board.tryToSpawnSun(gameTime, lastSunSpawnTime)){
-                lastSunSpawnTime = gameTime;
-            }
-            
-            gameOver = board.updateBoard( timeElapsed);
-            lastBoardUpdate = currentTime;
-
-            if(gameTime >= 180 && !gameOver){
-                GameClock.printTime();
-                System.out.println("Player Wins");    
-                gameOver = true;
-            } 
-
-            try{ 
-                Thread.sleep(100);
-            } catch(InterruptedException e){
-                Thread.currentThread().interrupt();
-                System.err.println("Game loop interrupted: " + e.getMessage());
-            }
-
-            return gameOver;
+        double timeElapsed = (double)(currentTime - lastBoardUpdate)/1000.0;
+        int gameTime = (int) ((currentTime - startTime) / 1000.0);
+        
+        if(board.tryToSpawn(gameTime, lastZombieSpawnTime)){
+            lastZombieSpawnTime = gameTime;
         }
+        if(board.tryToSpawnSun(gameTime, lastSunSpawnTime)){
+            lastSunSpawnTime = gameTime;
+        }
+        
+        gameOver = board.updateBoard( timeElapsed , gameTime);
+        lastBoardUpdate = currentTime;
+
+        
+
+        try{ 
+            Thread.sleep(100);
+        } catch(InterruptedException e){
+            Thread.currentThread().interrupt();
+            System.err.println("Game loop interrupted: " + e.getMessage());
+        }
+
+        return gameOver;
+    }
 
 
 
     private Player player;
-    private Gui gui;
+    private PvzGui gui;
     private Board board;
     private double lastBoardUpdate;
     private int lastZombieSpawnTime;
     private int lastSunSpawnTime;
     private double startTime; 
     private int plantNo; // selection panels plant number
+   
      
     }

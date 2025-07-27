@@ -89,8 +89,8 @@ public class PlayerThread implements Runnable {
                 }
             } else if(userInput == 3){ // Player wants to collect sun
                 // Iterate through all tiles on the board to collect sun
-                for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-                    for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+                for(laneNo = 0; laneNo < Board.getMaxLanes(); laneNo++){
+                    for(tileNo = 0; tileNo < Board.getMaxTiles(); tileNo++){
                         collectedSun += collectSun(lane[laneNo][tileNo].getSunList());
                     }
                 }
@@ -112,18 +112,18 @@ public class PlayerThread implements Runnable {
         int selectedTileNo = 0;
 
 
-        while(selectedLaneNo > PvZDriver.getMaxLanes() || selectedLaneNo < 1){
+        while(selectedLaneNo > Board.getMaxLanes() || selectedLaneNo < 1){
             System.out.println("Enter lane to place:");
             selectedLaneNo = sc.nextInt(); // Use the class's scanner
-            if(selectedLaneNo > PvZDriver.getMaxLanes() || selectedLaneNo < 1 ){
+            if(selectedLaneNo > Board.getMaxLanes() || selectedLaneNo < 1 ){
                  System.out.println("not a valid lane");
             } 
         }
         
-         while(selectedTileNo > PvZDriver.getMaxTiles() || selectedTileNo < 1){
+         while(selectedTileNo > Board.getMaxTiles() || selectedTileNo < 1){
             System.out.println("Enter tile to place:");
             selectedTileNo = sc.nextInt(); // Use the class's scanner
-            if(selectedTileNo > PvZDriver.getMaxTiles() || selectedTileNo < 1 ){
+            if(selectedTileNo > Board.getMaxTiles() || selectedTileNo < 1 ){
                 System.out.println("not a valid tile");
             }
          }

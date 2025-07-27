@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 public class Player {
     private int totalSun;
     private Map<Integer , Plant > plantList;
     private Board board;
 
     public Player(Board board){
-        totalSun = 150;
+        totalSun = 500 ;
         this.board = board;
 
         plantList = new HashMap<>();
@@ -21,11 +22,13 @@ public class Player {
         return totalSun;
     }
 
+
     public void tryToplacePlant(int plantNo , int laneNo, int tileNo){
         Plant pickedPlant = plantList.get(plantNo);
         double currentTime = System.currentTimeMillis() / 1000; 
         Tile userTile;
    
+        
         if(pickedPlant instanceof Peashooter){ // Player wants to place a Peashooter
             
                 if(totalSun >= Peashooter.getCost()){ // Check if player has enough sun
@@ -116,4 +119,35 @@ public class Player {
         }
         this.totalSun += collectedSun;
     }
-}   
+
+
+    public ArrayList<Boolean> getCooldownState(){
+        ArrayList<Boolean> cdList = new ArrayList<>();// list of cooldown
+        long currentTime = System.currentTimeMillis() / 1000;
+
+        //  System.out.println(currentTime - Peashooter.getTimeSinceLastPlant());
+                if(Peashooter.getCooldown() > currentTime - Peashooter.getTimeSinceLastPlant()){
+                    cdList.add(true);
+                  
+                }
+                else{
+                    cdList.add(false);
+                }
+                if(Sunflower.getCooldown() > currentTime - Sunflower.getTimeSinceLastPlant()){
+                    cdList.add(true);
+                }
+                else{
+                    cdList.add(false);
+                }
+                if(Cherrybomb.getCooldown() >currentTime - Cherrybomb.getTimeSinceLastPlant()){
+                    cdList.add(true);
+                }
+                else{
+                    cdList.add(false);
+                }
+                
+        
+        return cdList;
+    
+    }   
+}
