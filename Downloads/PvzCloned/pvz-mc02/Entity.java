@@ -14,7 +14,11 @@ public  class Entity
 
     
 
+<<<<<<< HEAD
     public Entity(String type, String state, int laneNo, int tileNo, double position , double size )
+=======
+    public Entity(String type, String modifier, String state, int laneNo, int tileNo, double position , double size)
+>>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
     {
         positionY = 0;
         this.type = type;
@@ -26,7 +30,12 @@ public  class Entity
         this.size = size;
     }
 
+<<<<<<< HEAD
     public Entity(String type,  String state, int laneNo, int tileNo, double position , double size, double positionY )
+=======
+    // Entity for projectile
+    public Entity(String type, String modifier, String state, int laneNo, int tileNo, double position , double size, double positionY )
+>>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
     {
         this(type,  state, laneNo, tileNo, position, size);
         this.positionY = positionY;

@@ -35,6 +35,35 @@ public class PvZDriver {
         
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Returns the maximum number of lanes on the game board.
+     * @return The maximum number of lanes.
+     */
+    public static int getMaxLanes()
+    {
+        return MAX_LANES;
+    }
+
+    /**
+     * Returns the maximum number of tiles per lane on the game board.
+     * @return The maximum number of tiles.
+     */
+    public static int getMaxTiles()
+    {
+        return MAX_TILES;
+    }
+
+    /**
+     * Returns the current game level.
+     * @return The current game level.
+     */
+    public static int getLevel()
+    {
+        return level;
+    }
+>>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
 
     /**
      * The main method to start and run the Plants vs. Zombies game simulation.
