@@ -52,11 +52,7 @@ public class Projectile {
         size = 0.25;
         DAMAGE = d;
         position = 0.8; // Projectiles start at the beginning of their tile
-<<<<<<< HEAD
         SPEED = 3; // Fixed speed of 2 tiles per second
-=======
-        SPEED = 4.5; // Fixed speed of 2 tiles per second
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
         tileNo = t;
         laneNo = l;
         DAMAGEFALLOFF = df;
