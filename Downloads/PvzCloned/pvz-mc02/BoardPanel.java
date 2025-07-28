@@ -30,17 +30,46 @@ public class BoardPanel extends JPanel  {
     
     }
 
-
     public void init()
     {
         animations = new AnimationManager();
+        initializeAnimations(animations);
 
+        noBorders = 6;
+
+        topPanelHeight = 200;
+        screenHeight = 1080 ;
+        screenWidth = 1920;
+
+        frameCount = 0;
+        currentFrame = 0;
+
+      
+
+        setBackground(Color.black);
+       
+
+        // creates the panel above the board
+        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
+       
+      
+
+
+        this.setLayout(new BorderLayout());
+
+
+        
+        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
+        
+    }
+
+    public void initializeAnimations(AnimationManager animations)
+    {
         // Environment
         animations.loadImages("environment", "Grass", 2);
 
         // Icons
         animations.loadAnimation("icons", "sun_idle", 1);
-
 
         // Normal Zombie animations
         // walk
@@ -79,11 +108,6 @@ public class BoardPanel extends JPanel  {
         // Peashooter idle animation
         animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
 
-        //cherry bomb idle animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
-        //cherry bomb explode animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
-
         // Sunflower idle animation
         animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
 
@@ -93,7 +117,8 @@ public class BoardPanel extends JPanel  {
         // Pea hit animation
         animations.loadAnimation("plants/peashooter", "pea_hit", 2);
 
-        noBorders = 6;
+        // Cherry bomb idle animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
 
         topPanelHeight = 200;
         screenHeight = 1080 ;
@@ -132,12 +157,9 @@ public class BoardPanel extends JPanel  {
         for(row = 0;  row < noLanes;  row++){
             for(col = 0; col < noTiles; col++){
                  tiles = animations.getImages("Grass");  
-                if(tiles != null){
-                  
-
-                    
+                if(tiles != null)
+                {   
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
-
                     if((col + row) % 2 == 0)
                     {
                       g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
