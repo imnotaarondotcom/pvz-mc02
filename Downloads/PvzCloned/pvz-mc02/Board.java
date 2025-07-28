@@ -1,19 +1,9 @@
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
-public class Board 
-{
-    private double lastZombieSpawnTime = 0.0;
-    private double lastSunSpawnTime = 0.0;
-    private boolean finalWaveTriggered = false;
-    private boolean gameOver = false;
-    private final double ZOMBIE_SPAWN_INTERVAL_EASY = 10.0;
-    private final double ZOMBIE_SPAWN_INTERVAL_MEDIUM = 5.0;
-    private final double ZOMBIE_SPAWN_INTERVAL_HARD = 3.0;
-    private final double SUN_SPAWN_INTERVAL = 8.0;
+public class Board {
 
-    public Board(int l, int t)
-    {
+    public Board(int l, int t){
         MAX_LANES = l;
         MAX_TILES = t;
         lane = new Tile[MAX_LANES][MAX_TILES];
@@ -30,13 +20,11 @@ public class Board
 
         int i = 0;
         int tile = 0 ;
-        for(i = 0 ; i < MAX_LANES; i++)
-        {
-            lanes[i] = new Tile[MAX_TILES];
+        for(i = 0 ; i < MAX_LANES; i++){
+            lane[i] = new Tile[MAX_TILES];
 
-            for(tile = 0; tile < MAX_TILES; tile++)
-            {
-                lanes[i][tile] = new Tile(i, tile);
+            for(tile = 0; tile < MAX_TILES; tile++){
+                lane[i][tile] = new Tile(i, tile);
             }
         }
     }
@@ -95,72 +83,37 @@ public class Board
                 laneNo = tilePicker.nextInt(getMaxLanes());
                 lane[laneNo][MAX_TILES - 1].spawnZombie(laneNo,MAX_TILES - 1 ,  armorManager.getArmor());
             }
-            finalWaveTriggered = true; // set flag to true so it doesnt trigger again
-            return true; // indicate zombies were spawned
+            return true;
         }
 
-        // regular Zombie Spawning
-        else if (gameTime >= 10 && gameTime <= 80)
-        {
-            spawnInterval = ZOMBIE_SPAWN_INTERVAL_EASY;
-        }
-        else if (gameTime >= 81 && gameTime <= 140)
-        {
-            spawnInterval = ZOMBIE_SPAWN_INTERVAL_MEDIUM;
-        }
-        else if (gameTime > 140 && gameTime <= 170)
-        {
-            spawnInterval = ZOMBIE_SPAWN_INTERVAL_HARD;
-        }
-
-        // only spawn regular zombies if final wave hasn't been triggered
-        if (!finalWaveTriggered && spawnInterval > 0) { // only attempt to spawn if there's a valid interval
-            if (lastZombieSpawnTime >= spawnInterval)
-            {
-                laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
-                lanes[laneNo][MAX_TILES - 1].spawnZombie(laneNo, MAX_TILES - 1);
-                lastZombieSpawnTime -= spawnInterval; // subtract the interval
-                return true; // a zombie was spawned
-            }
-        }
-
-        return false; // no Zombie spawned
+        return false;
     }
     
-    public boolean tryToSpawnSun(int gameTime)
-    {
-        // dont spawn sun if game over
-        if (gameOver)
-        {
-            return false;
-        }
+     /**
+     * Attempts to spawn sun collectibles on random tiles at regular intervals.
+     * @param gameTime The current elapsed game time in seconds.
+     * @param lastSunSpawnTime The game time when sun was last spawned.
+     * @param lane The 2D array of Tiles representing the game lanes.
+     * @return True if sun was spawned, false otherwise.
+     */
+    public boolean tryToSpawnSun(int gameTime, int lastSunSpawnTime ){
         int tileNo;
         int laneNo;
     
         tileNo = tilePicker.nextInt(getMaxTiles());
         laneNo = tilePicker.nextInt(getMaxLanes());
 
-        while (lastSunSpawnTime >= SUN_SPAWN_INTERVAL)
-        {
-            tileNo = tilePicker.nextInt(PvZDriver.getMaxTiles());
-            laneNo = tilePicker.nextInt(PvZDriver.getMaxLanes());
-
+        if(gameTime % 8 == 0 && lastSunSpawnTime != gameTime){
             Sun newSun = new Sun(laneNo, tileNo);
-            lanes[laneNo][tileNo].addSun(newSun);
-            lastSunSpawnTime -= SUN_SPAWN_INTERVAL;
-            return true; // sun spawned
+            lane[laneNo][tileNo].addSun(newSun);
+            return true;
         }
-        return false; // no sun spawned
+        return false;
     }
+
 
     public void updatePlants(double timeElapsed)
     {
-        // dont update if game over
-        if (gameOver)
-        {
-            return;
-        }
-
         int laneNo = 0;
         int tileNo = 0;
         Tile currentTile;
@@ -169,8 +122,8 @@ public class Board
         {
             for(tileNo = 0; tileNo < getMaxTiles(); tileNo++)
             {
-                plant = lanes[laneNo][tileNo].getPlant();
-                currentTile = lanes[laneNo][tileNo];
+                plant = lane[laneNo][tileNo].getPlant();
+                currentTile = lane[laneNo][tileNo];
                 if(plant != null )
                 {
                     plant.tryToAction(this, timeElapsed);
@@ -200,42 +153,39 @@ public class Board
             for(tileNo = 0; tileNo < getMaxTiles(); tileNo++){
                 currentTile = lane[laneNo][tileNo];  
                 
-                projectiles = lanes[laneNo][tileNo].getProjectiles();
+                projectiles = lane[laneNo][tileNo].getProjectiles();
                 iterator = projectiles.iterator();
                 
-                while(iterator.hasNext())
-                {
+                while(iterator.hasNext()){
                     projectile = iterator.next();
                     
-                    if(currentTile.hasZombie())
-                    {
-                        if(projectile.hasHitZombie(currentTile))
-                        {
-                            // remove projectile if it hit zombie
+                    if(currentTile.hasZombie()){
+                        if(projectile.hasHitZombie(currentTile)){
+                        
                             iterator.remove();
+
+                       /*      if(zombie.getHealth() <= 0){    /* move zombie removal to zombie updater  
+                                currentTile.removeZombie(zombie);
+                                GameClock.printTime();
+                                System.out.printf("Zombie died at lane %d tile %d\n", zombie.getLaneNo() + 1, zombie.getTileNo() + 1);
+                            }  until here */
+
                         } 
-                        else 
-                        {
-                            // otherwise keep moving
+                        else {
                             projectile.updatePosition(timeElapsed);
                         }
                     } 
-                    else 
-                    {
-                        if(projectile.isReadyToMove(timeElapsed))
-                        {
-                            if(projectile.getTileNo() < MAX_TILES)
-                            {
+                    else {
+                        if(projectile.isReadyToMove(timeElapsed)){
+                            if(projectile.getTileNo() < MAX_TILES){
                                 iterator.remove();
-                                lanes[laneNo][projectile.getTileNo()].placeProjectile(projectile);
+                                lane[laneNo][projectile.getTileNo()].placeProjectile(projectile);
                             } 
-                            else 
-                            {
+                            else {
                                 iterator.remove();
                             }
                         } 
-                        else 
-                        {
+                        else {
                             projectile.updatePosition(timeElapsed);
                         }
                     }
@@ -244,17 +194,71 @@ public class Board
         }
     }
 
+  
+// to do remove zombies if its dead 
+
+
+    /**
+     * returns true if zombies have entered the house
+     *
+     */
+     /*
+    public boolean updateZombies(double timeElapsed){
+
+        int laneNo = 0;
+        int tileNo = 0;
+        ArrayList<Zombie> zombies;
+        Zombie zombie;
+        Plant plant;
+        Tile currentTile; 
+         for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
+            for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
+                zombies = lane[laneNo][tileNo].getZombies();
+                plant = lane[laneNo][tileNo].getPlant();    
+                currentTile = lane[laneNo][tileNo];          
+                
+                // Use an iterator to safely remove zombies from the list if they move
+                Iterator<Zombie> zombieIterator = zombies.iterator();
+
+                while(zombieIterator.hasNext()){
+                    zombie = zombieIterator.next();
+                    if(plant != null){ // If a plant exists in current tile, zombie tries to attack it
+                        if(zombie.isReadyToAttack(timeElapsed)){
+                            zombie.attack(plant);
+                            if(plant.getHealth() <= 0){
+                                currentTile.removePlant();
+                                GameClock.printTime();
+                                System.out.printf("Plant at lane %d tile %d died\n", plant.getLaneNo() + 1, plant.getTileNo() + 1);
+                            }
+                        }
+                    } else { // If no plant, then update position of the zombie
+                        if(zombie.isReadyToMove(timeElapsed)){
+                            if(zombie.inLastTile()){
+                                GameClock.printTime();
+                                System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
+                                System.out.println("*** GAME OVER | ZOMBIES WIN ***");
+                                return true;
+                            }
+                            zombie.move();
+                            zombieIterator.remove(); // Remove from current tile
+                            lane[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
+                            GameClock.printTime();
+                            System.out.println("Zombie from lane " + (laneNo + 1 ) + " Tile "  +
+                                ( tileNo + 1 )+  " has moved to tile " + (tileNo ) );
+                        } 
+                    }    
+                }
+            }
+        }    
+        return false;
+    }
+*/  
      /**
      * returns true if zombies have entered the house
      * @param timeElapsed
      * @return
      */
-    public boolean updateZombies(double timeElapsed)
-    {
-        if (gameOver)
-        {
-            return true;
-        }
+    public boolean updateZombies(double timeElapsed){
 
         int laneNo = 0;
         int tileNo = 0;
@@ -271,31 +275,22 @@ public class Board
                 // Use an iterator to safely remove zombies from the list if they move
                 Iterator<Zombie> zombieIterator = zombies.iterator();
 
-                while(zombieIterator.hasNext())
-                {
+                while(zombieIterator.hasNext()){
                     zombie = zombieIterator.next();
-                    // If a plant exists in current tile, zombie tries to attack it
-                    // wont move if there is
-                    if(plant != null)
-                    { 
-                        if(zombie.isReadyToAttack(timeElapsed))
-                        {
+                    if(plant != null && !(plant instanceof Cherrybomb) ){ // If a plant exists in current tile, zombie tries to attack it
+                        if(zombie.isReadyToAttack(timeElapsed)){
                             zombie.attack(plant);   
                         }
-                    } 
-                    else 
-                    { 
-                        // If no plant, then update position of the zombie
-                        if(zombie.isReadyToMove(timeElapsed))
-                        {
+                    } else { // If no plant, then update position of the zombie
+                        if(zombie.isReadyToMove(timeElapsed)){
                             
                             if(zombie.inLastTile()){ 
 
                                 zombie.move();
 
+                                
                             }
-                            else if(zombie.getTileNo() == -1)
-                            {
+                            else if(zombie.getTileNo() == -1){
                                 if(zombie.isReadyToMove(timeElapsed)){
                                     GameClock.printTime();
                                     System.out.printf("Zombies at lane %d tile %d entered house\n", zombie.getLaneNo() + 1 , zombie.getTileNo() + 1);
@@ -310,7 +305,7 @@ public class Board
                                 System.out.println("Zombie from lane " + (laneNo + 1 ) + " Tile "  +
                                 ( tileNo + 1 )+  " has moved to tile " + (tileNo ) );
                                 zombieIterator.remove(); // Remove from current tile
-                                lanes[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
+                                lane[laneNo][tileNo - 1].placeZombie(zombie); // Place in new tile
                                 zombie.move(); // updates zombies tile no
                                 
                             }
@@ -331,11 +326,6 @@ public class Board
 
  
 
-    public Tile getTile(int laneNo, int tileNo)
-    {
-        return lanes[laneNo][tileNo];
-    }
-
     public ArrayList<Entity> getEntities(){
         ArrayList<Entity> entities = new ArrayList<Entity>();
         Iterator<Sun> sIterator;
@@ -353,10 +343,10 @@ public class Board
         {
             for(col = 0; col < getMaxTiles(); col++)
             {
-                zIterator = lanes[row][col].getZombies().iterator();
-                sIterator = lanes[row][col].getSunList().iterator();
-                projIterator = lanes[row][col].getProjectiles().iterator();
-                plant = lanes[row][col].getPlant();
+                zIterator = lane[row][col].getZombies().iterator();
+                sIterator = lane[row][col].getSunList().iterator();
+                projIterator = lane[row][col].getProjectiles().iterator();
+                plant = lane[row][col].getPlant();
 
                 // iterator for each zombie
                 while(zIterator.hasNext()) 
@@ -394,6 +384,14 @@ public class Board
 
         return entities;
      }
+    
+    public Tile getTile(int laneNo, int tileNo){
+        return lane[laneNo][tileNo];
+    }
+
+    public Tile[] getLane(int l){
+        return lane[l];
+    }
 
     public void nextLevel(){
         level += 1;

@@ -35,35 +35,6 @@ public class PvZDriver {
         
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * Returns the maximum number of lanes on the game board.
-     * @return The maximum number of lanes.
-     */
-    public static int getMaxLanes()
-    {
-        return MAX_LANES;
-    }
-
-    /**
-     * Returns the maximum number of tiles per lane on the game board.
-     * @return The maximum number of tiles.
-     */
-    public static int getMaxTiles()
-    {
-        return MAX_TILES;
-    }
-
-    /**
-     * Returns the current game level.
-     * @return The current game level.
-     */
-    public static int getLevel()
-    {
-        return level;
-    }
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
 
     /**
      * The main method to start and run the Plants vs. Zombies game simulation.
@@ -73,6 +44,10 @@ public class PvZDriver {
         PvzGui gui = new PvzGui();      
         Board board = new Board(5,9); // remember to change
         Controller controller = new Controller(gui, board);
+      //  board.getTile(3,8).spawnZombie(3,9);
+      //  board.getTile(4,8).spawnZombie(4,9);
         controller.start();
+
+       
     }
 }

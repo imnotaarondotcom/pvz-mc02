@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.Timer;
 
 
 
@@ -15,24 +14,24 @@ public class Controller  extends MouseAdapter implements ActionListener {
         player = new Player(b);
         gui = g;
         board = b;
-        gameOver = false;
         addMouseListener();
         setActionListener();
     }
 
     // anonymous method
-    public void addMouseListener()
-    {
+    public void addMouseListener(){
         // anonymous class for selection panel
-        MouseAdapter selection = new MouseAdapter() 
-        {              
+        MouseAdapter selection = new MouseAdapter() {
+                
             @Override
-            public void mousePressed(MouseEvent e)
-            {
+            public void mousePressed(MouseEvent e){
                 System.out.printf(" Selectors tap Border %d\n",  (int) e.getX() / (gui.getScreenWidth() / gui.getNoBorders()) + 1);
                 plantNo = (int) e.getX() / (gui.getScreenWidth() / gui.getNoBorders()); 
+                
             }
         };
+        
+        
         gui.setMouseListener(this , selection);
     }
 
@@ -71,12 +70,15 @@ public class Controller  extends MouseAdapter implements ActionListener {
 
     
 
-    public void start()
-    {
-        System.out.println("*** PLANTS VS. ZOMBIES *** \nPress 1 To Play");
-     
-        int input = 0;
+    public void start(){
+       
         GameClock clock = new GameClock();
+
+        System.out.println("*** PLANTS VS. ZOMBIES *** \nPress 1 To Play");
+       
+
+        GameClock.setTime();
+      
         
         startTime = System.currentTimeMillis();
 
@@ -89,10 +91,7 @@ public class Controller  extends MouseAdapter implements ActionListener {
         inputThread.setDaemon(true);
         inputThread.start();
 
-        gui.setBoardSize(board.getMaxLanes(), board.getMaxTiles());
         
-        // Initially 0
-        lastTimeUpdate = System.currentTimeMillis();
 
         while(!updateModel()){ 
             gui.getBoardPanel().setEntities(board.getEntities());
@@ -103,9 +102,13 @@ public class Controller  extends MouseAdapter implements ActionListener {
        
     }
 
-    // returns true if game over
-    public boolean updateModel(double timeElapsed)
-    {
+    
+
+    /**updates the entities that are in the board and returns if the game has ended
+     * 
+     * @return - returns 0 if the game has not ended and 1 otherwise
+     */
+    public boolean updateModel(){
         boolean gameOver = false;
         long currentTime = System.currentTimeMillis();
         double timeElapsed = (double)(currentTime - lastBoardUpdate)/1000.0;

@@ -56,11 +56,7 @@ public class Tile {
         if(TILE_NO == Board.getMaxTiles() - 1){ // Check if this is the designated spawn tile
 
             // ZOMBIE TO BE SPAWNED
-<<<<<<< HEAD
             Zombie z = new Zombie(laneNo, tileNo , armor);
-=======
-            Zombie z = new Zombie(laneNo, tileNo, "flag");
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
             
             GameClock.printTime();
             placeZombie(z);
@@ -134,10 +130,8 @@ public class Tile {
      * This is useful for determining which zombie a plant should target first.
      * @return The zombie with the highest position, or null if no zombies are present.
      */
-    public Zombie highestPosition()
-    {
-        if (zombies.isEmpty()) // Check if the list is empty first
-        { 
+    public Zombie highestPosition(){
+        if (zombies.isEmpty()) { // Check if the list is empty first
             return null;
         }
         

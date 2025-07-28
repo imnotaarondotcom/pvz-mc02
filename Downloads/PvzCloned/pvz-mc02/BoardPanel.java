@@ -26,80 +26,21 @@ public class BoardPanel extends JPanel  {
 
     public BoardPanel(int topPanelHeight, int screenHeight, int screenWidth)
     {
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
         init();
     
     }
 
-    public void init()
-=======
-        initializeGui();
-    }
 
-    public void initializeGui()
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
+    public void init()
     {
         animations = new AnimationManager();
-        initializeAnimations(animations);
 
-        noBorders = 6;
-
-        topPanelHeight = 200;
-        screenHeight = 1080 ;
-        screenWidth = 1920;
-
-        frameCount = 0;
-        currentFrame = 0;
-
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
-      
-
-        setBackground(Color.black);
-       
-=======
-        frame = new JFrame("Plants Vs Zombies");
-        frame.setSize(screenWidth, screenHeight);
-
-        setBackground(Color.black);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
-        frame.setResizable(false);   
-
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
-
-        // creates the panel above the board
-        topPanel = new PlantSelectionPanel(screenWidth, topPanelHeight, noBorders);
-       
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
-      
-=======
-        frame.add(topPanel);
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
-
-
-        this.setLayout(new BorderLayout());
-
-
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
-        
-        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
-        
-=======
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(topPanel, BorderLayout.NORTH);
-        this.setPreferredSize(new Dimension(screenWidth,screenHeight - topPanelHeight));
-        frame.add(this, BorderLayout.CENTER );
-        frame.setVisible(true);
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
-    }
-
-    public void initializeAnimations(AnimationManager animations)
-    {
         // Environment
         animations.loadImages("environment", "Grass", 2);
 
         // Icons
         animations.loadAnimation("icons", "sun_idle", 1);
+
 
         // Normal Zombie animations
         // walk
@@ -138,6 +79,11 @@ public class BoardPanel extends JPanel  {
         // Peashooter idle animation
         animations.loadAnimation("plants/peashooter", "peashooter_idle", 8);
 
+        //cherry bomb idle animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
+        //cherry bomb explode animation
+        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
+
         // Sunflower idle animation
         animations.loadAnimation("plants/sunflower", "sunflower_idle", 10);
 
@@ -147,10 +93,8 @@ public class BoardPanel extends JPanel  {
         // Pea hit animation
         animations.loadAnimation("plants/peashooter", "pea_hit", 2);
 
-        // Cherry bomb idle animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploding", 3);
+        noBorders = 6;
 
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
         topPanelHeight = 200;
         screenHeight = 1080 ;
         screenWidth = 1920;
@@ -161,10 +105,6 @@ public class BoardPanel extends JPanel  {
 
 
         
-=======
-        // Cherry bomb explode animation
-        animations.loadAnimation("plants/cherrybomb", "cherrybomb_exploded", 4);
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
     }
 
      
@@ -192,9 +132,12 @@ public class BoardPanel extends JPanel  {
         for(row = 0;  row < noLanes;  row++){
             for(col = 0; col < noTiles; col++){
                  tiles = animations.getImages("Grass");  
-                if(tiles != null)
-                {   
+                if(tiles != null){
+                  
+
+                    
                     g2.drawImage(tiles[0], col * tileX, row * tileY, tileX, tileY , null);
+
                     if((col + row) % 2 == 0)
                     {
                       g2.drawImage(tiles[1], col * tileX, row * tileY, tileX, tileY , null);
@@ -220,20 +163,10 @@ public class BoardPanel extends JPanel  {
                     
                 if (animation != null)
                 {
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
                     if( !entity.getType().equals("pea"))
                         g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
                     else{
                         g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)(tileX), (int)((tileY) * entity.getSize()) , null);  
-=======
-                    if(!entity.getType().equals("zombie") && !entity.getType().equals("pea"))
-                    {
-                        g2.drawImage(animation[currentFrame % animation.length ], x, y , (int)((tileX) * entity.getSize()), (int)((tileY) * entity.getSize()) , null);  
-                    }
-                    else
-                    {
-                        g2.drawImage(animation[currentFrame % animation.length ], x - (int)(0.5 * tileX), y , (int)((tileX) * entity.getSize()), (int)((tileY) * entity.getSize()) , null);  
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
                     }
                 }
                 else
@@ -351,9 +284,6 @@ public class BoardPanel extends JPanel  {
 
     private PlantSelectionPanel topPanel;
     private int noBorders;
-<<<<<<< HEAD:Downloads/PvzCloned/pvz-mc02/BoardPanel.java
    
   
-=======
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd:Downloads/PvzCloned/pvz-mc02/Gui.java
 }

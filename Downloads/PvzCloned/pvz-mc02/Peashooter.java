@@ -43,18 +43,21 @@ public class Peashooter extends Plant {
         updateState("idle");
     }
 
+    /**
+     * Attempts to make the Peashooter shoot a pea.
+     * Fires if lane is not clear (i.e., there is a zombie) and attack cooldown is met.
+     * @param board board that plant is occupying
+     * @param elapsedTime Time elapsed since last update.
+     * @param tiles All tiles in the plant's lane.
+     */
     @Override
-    public void tryToAction(Board board, double elapsedTime)
-    {
-        // Get tiles of current lane
-        Tile[] lane = board.getSpecificLane(LANE_NO);
+    public void tryToAction(Board board, double elapsedTime){
+        Tile[] tiles = board.getLane(LANE_NO);
         
-        // Attack if no zombies
-        if(!isLaneClear(lane))
-        {
+
+        if(!isLaneClear(tiles)){
             updateTime(elapsedTime);
-            if(timeSinceLastAttack >= SPEED)
-            {
+            if(timeSinceLastAttack >= SPEED){
                 action(board);
                 timeSinceLastAttack = 0;
             }

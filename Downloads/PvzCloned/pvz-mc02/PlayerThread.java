@@ -11,7 +11,7 @@ import java.util.*;
 
 public class PlayerThread implements Runnable {
     /** The game board lanes, represented as a 2D array of Tiles. */
-    volatile Tile[][] lanes;
+    volatile Tile[][] lane;
     volatile Board board;
 
     /** The player's current total sun currency. */
@@ -24,18 +24,16 @@ public class PlayerThread implements Runnable {
      * Constructs a PlayerThread with access to the game's lanes.
      * @param lane The 2D array of Tiles representing the game lanes.
      */
-    public PlayerThread(Board board)
-    {
+    public PlayerThread(Board board){
         this.board = board;
-        this.lanes = board.getAllLanes();
+        this.lane = board.getLanes();
     }
 
     /**
      * The main execution loop for the player's thread.
      * Handles continuous user input for planting plants or collecting sun.
      */
-    public void run()
-    {
+    public void run(){
         sc = new Scanner(System.in);
         Tile userTile; // Tile chosen by the user for an action
         int userInput;
@@ -45,26 +43,18 @@ public class PlayerThread implements Runnable {
 
 
         System.out.println("Controls");
-        while(true)
-        {
+        while(true){
             System.out.println("1. To place Peashooter \n2. To place Sunflower\n3. To collect sun");
             userInput = Integer.parseInt(sc.next());
             // Get current game time in seconds
             double currentTime = System.currentTimeMillis() / 1000.0; // Use 1000.0 for double division
 
-            // Player wants to place a Peashooter
-            if(userInput == 1)
-            { 
-                // Check if player has enough sun
-                if(totalSun >= Peashooter.getCost())
-                {
+            if(userInput == 1){ // Player wants to place a Peashooter
+                if(totalSun >= Peashooter.getCost()){ // Check if player has enough sun
                     // Check if Peashooter is off cooldown for planting
-                    if(currentTime - Peashooter.getTimeSinceLastPlant() >= Peashooter.getCooldown())
-                    {
+                    if(currentTime - Peashooter.getTimeSinceLastPlant() >= Peashooter.getCooldown()){
                         userTile = getTileToPlace(); 
-                        // Check if tile is valid and empty
-                        if(userTile != null && userTile.getPlant() == null)
-                        { 
+                        if(userTile != null && userTile.getPlant() == null){ // Check if tile is valid and empty
                             // Place new Peashooter and update game state
                             userTile.placePlant(new Peashooter(userTile.getLaneNo(), userTile.getTileNo()));
                             totalSun -= Peashooter.getCost();
@@ -97,19 +87,11 @@ public class PlayerThread implements Runnable {
                 } else {
                     System.out.println("Not enough sun!");
                 }
-            } 
-            else if(userInput == 3)
-            { // Player wants to collect sun
+            } else if(userInput == 3){ // Player wants to collect sun
                 // Iterate through all tiles on the board to collect sun
-<<<<<<< HEAD
                 for(laneNo = 0; laneNo < Board.getMaxLanes(); laneNo++){
                     for(tileNo = 0; tileNo < Board.getMaxTiles(); tileNo++){
                         collectedSun += collectSun(lane[laneNo][tileNo].getSunList());
-=======
-                for(laneNo = 0; laneNo < PvZDriver.getMaxLanes(); laneNo++){
-                    for(tileNo = 0; tileNo < PvZDriver.getMaxTiles(); tileNo++){
-                        collectedSun += collectSun(lanes[laneNo][tileNo].getSunList());
->>>>>>> d7605d28088ad779271db2bc8d8289fe5e4407bd
                     }
                 }
                 GameClock.printTime(); // Print current game time
@@ -147,7 +129,7 @@ public class PlayerThread implements Runnable {
          }
 
         // Returns the Tile based on user input (adjusting for 0-based array indexing)
-        return lanes[selectedLaneNo - 1][selectedTileNo - 1];
+        return lane[selectedLaneNo - 1][selectedTileNo - 1];
     }
 
     
