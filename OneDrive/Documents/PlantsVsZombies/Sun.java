@@ -1,6 +1,7 @@
 public class Sun {
-    int tileNo;
-    int laneNo;
+    private int tileNo;
+    private int laneNo;
+    private static final int value = 50; 
     /**
      * 
      * @param t - tile sun will be spawned
@@ -10,7 +11,8 @@ public class Sun {
         tileNo = t;
         laneNo = l;
         GameClock.printTime();
-        System.out.println("Sun spawned");
+        System.out.printf("Sun spawned at lane %d tile %d\n", laneNo + 1, tileNo + 1);
+        
     }
 
     /**
@@ -24,5 +26,9 @@ public class Sun {
         laneNo = l;
         GameClock.printTime();
         System.out.printf("Sun spawned by %s at lane %d tile %d\n", p.getName(), p.getLaneNo() + 1, p.getTileNo() + 1);
+    }
+
+    public static int getValue(){
+        return value;
     }
 }

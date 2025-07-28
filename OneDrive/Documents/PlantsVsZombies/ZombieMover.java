@@ -1,5 +1,5 @@
 public class ZombieMover implements Runnable{
-    private Tile[][] lane;
+     private Tile[][] lane;
 
 
     public ZombieMover(Tile[][] lane ){

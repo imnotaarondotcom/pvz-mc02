@@ -25,95 +25,53 @@ public class Zombie {
 
      }
 
+     public void move(){
+        this.resetPosition( position % Tile.getTileLenght());  
+                tileNo = tileNo - 1;
+     }
+
 
      /**
       *updates position and moves a zombie if position is more than tile length 
-      * @param tiles - a lane of tiles where zombie is located 
       * @param elapsedTime - time elapsed since last update
-      * @return - true if zombie was succesfully moved or updated and false if zombie has enterd the house
+      * @return - true if zombie is ready to move
       */
-     public boolean tryToMove(Tile[] tiles , double elapsedTime){
+     public boolean isReadyToMove( double elapsedTime){
 
-        /*  tries to attack a plant if possible before updating movement
-            and returns true if it has attacked and cancels updating position*/ 
-        if(tryToAttack(tiles, elapsedTime)){ 
-            return true;
-        }
-
-        // if there is no plant continue moving 
+       
         this.updatePosition(elapsedTime);
 
         
-        if(!(inLastTile())){
-            // moves the zombie if its position is greater than tile length
+       
+        
             if(position >= Tile.getTileLenght()){
-                this.resetPosition( position % Tile.getTileLenght());
-                tiles[tileNo].removeZombie(this);
-                tiles[tileNo - 1].placeZombie(this);
-                GameClock.printTime();
-                System.out.println("Zombie from lane " + (laneNo + 1 ) + " Tile "  +( tileNo + 1 )+  " has moved to tile " + (tileNo ) );
-                tileNo = tileNo - 1;
+                
                 return true;
             }
            
-        }
-            // if zombie can move but is in last tile return false in order to end the game 
-        else{
-             if(position >= Tile.getTileLenght()){
-                GameClock.printTime();
-                 System.out.println("zombies in  at lane " + (laneNo + 1));
-                  return false;
-             }
-        }
-        return true;
+        
+            
+       
+        return false;
 
      }
      /**
-      * attacks a plant if tile next to this zombe has a plant or current tile has a plant
-      * @param tile - tiles of the lane the zombie is currnetly in 
+      * attacks a plant if time elapsed sice last attack is higher than attack speed
+      * @param plant - plant to attack
       * @param timeElapsed - time since last update 
-      * @return - returns true if there is 
+      * @return - returns true if zombie is ready to attack
       */
-     public boolean tryToAttack(Tile[] tile, double timeElapsed){
-        Plant currentTilePlant = tile[tileNo].getPlant();
-        
-        
-
-        // if current tile has a plant attack it 
-        if(currentTilePlant != null){
+     public boolean isReadyToAttack(double timeElapsed){
+  
             updateAttackCooldown(timeElapsed);
             if(timeSinceLastAttack > attackSpeed ){
-                attack(currentTilePlant);
+                
                 resetAttackCooldown(timeSinceLastAttack % attackSpeed);
-                if(currentTilePlant.getHealth() <= 0){
-                        tile[tileNo].removePlant();
-                    }
                 return true;
-            }
-            return true;
-        }
 
-        // if zombie is close to a plant in next tile attack it
-        if(!inLastTile()){
-            Plant nextPlant = tile[tileNo - 1].getPlant();
-            
-            if(position >= 800){
-                if(nextPlant != null){
-                    updateAttackCooldown(timeElapsed);                    
-                    if(timeSinceLastAttack > attackSpeed){
-                        attack(nextPlant);
-                        resetAttackCooldown(timeSinceLastAttack % attackSpeed);
-                        if(nextPlant.getHealth() <= 0){
-                            tile[tileNo - 1].removePlant();
-                        }
-                        return true;
-                    } 
-                    return true;
-                }
             }
             
-            
-        }
+        
 
 
         return false;
@@ -126,7 +84,7 @@ public class Zombie {
      public void attack(Plant p){
         p.takeDamage(damage);
         GameClock.printTime();
-        System.out.printf("Zombie attacked plant at lane %d tile %d  updated health : %d\n",( laneNo + 1), (tileNo + 1) , p.getHealth());
+        System.out.printf("Zombie attacked %s at lane %d tile %d  updated health : %d\n",p.getName(), ( laneNo + 1), (tileNo + 1) , p.getHealth());
      }
 
      /**
@@ -140,13 +98,7 @@ public class Zombie {
         System.out.printf("Zombie at lane %d tile %d hit updated health : %d\n", (laneNo + 1), (tileNo + 1), health);
      }
 
-     public int getSpeed(){
-         return speed;
-     }
-
-     public int getHealth(){
-        return health;
-     }
+    
 
      /**
       * updates zombies poisition
@@ -185,6 +137,22 @@ public class Zombie {
 
      public double getPosition(){
       return position;
+     }
+
+      public int getSpeed(){
+         return speed;
+     }
+
+     public int getHealth(){
+        return health;
+     }
+
+     public int getTileNo(){
+        return tileNo;
+     }
+
+     public int getLaneNo(){
+        return laneNo;
      }
      
      /**

@@ -27,6 +27,10 @@ public class GameClock {
         
     }
 
+    public static void setTime(){
+        time = Instant.now();
+    }
+
     /**
      * prints the time since game clock was instantiated in minutes and seconds
      */

@@ -1,21 +1,28 @@
 public class Projectile {
     private int damage;
+    private int damageFalloff;
+    private int directDamage;
     private double position;
     private int speed; // how fast the projectile travels
     private int tileNo;
     private int laneNo;
+    private int tilesTravelled;
     /**
-     * 
+     * intitializes the projectile with damage line number and tile number
      * @param l - lane the projectile will occupy
      * @param t - tile the projectile will occupy
      * @param d - damage of the projectile
+     * @param df - falloff damage
      */
-    public Projectile(int l, int t, int d){
+    public Projectile(int l, int t, int d, int df, int dd){
         damage = d;
         position = 0;
-        speed = 20;
+        speed = 40;
         tileNo = t;
         laneNo = l;
+        damageFalloff = df; 
+        directDamage = dd;
+        tilesTravelled = 0;
     }
 
     /**
@@ -23,7 +30,8 @@ public class Projectile {
      * @param z - zombie to be hit
      */
     public void hit(Zombie z){
-        z.takeDamage(damage);
+        
+        z.takeDamage(damage + ( directDamage - damageFalloff * tilesTravelled ));
     }
 
     /**
@@ -44,51 +52,23 @@ public class Projectile {
 
 
     /**
-     * 
-     * @param t - lane of projectile
-     * @param timeElapsed - time elapssed since last update
-     * @param return - returns true if projectile should be removed in the current tile 
-     */ 
-    public boolean tryToHit(Tile[] t, double timeElapsed){
-        Zombie target;
-        target = t[tileNo].highestPosition();
+     * updates projectile position and returns whether it can move to the next tile
+     * @param timeElapsed - time elapsed since last update
+     * @return - true if projectile can go to the next tile
+     */
+    public boolean isReadyToMove(double timeElapsed){
         updatePosition(timeElapsed);
-        if(t[tileNo].noZombies() == 0){
-            
-            if(position >= Tile.getTileLenght()){
-                if(tileNo != PvZDriver.getMaxTiles() - 1){
-                    resetPosition(position % Tile.getTileLenght());
-                    t[tileNo + 1].placeProjectile(this);
-                  //  t[tileNo].removeProjectile(this);
-                  //  GameClock.printTime();
-                  //  System.out.printf("Projectile has moved from tile %d to tile %d Position %f  :\n", (tileNo + 1) , (tileNo +2), position);
-                    tileNo++;
-                    return true;
-                }
-                else{
-                   // t[tileNo].removeProjectile(this);
-                    //System.out.println("pea out of bounds lane " + laneNo);
-                    return true;
-                }
-                
-            }
-           
+        if(position >= Tile.getTileLenght()){
+            resetPosition(position % Tile.getTileLenght());
+            tileNo++;
+            tilesTravelled++;
+            return true;
         }
-
-        else if(target != null)
-            if (target.getPosition() + position >= Tile.getTileLenght() ){ // checks if projectile and zombie is in contact 
-                target.takeDamage(damage);
-               // t[tileNo].removeProjectile(this);
-
-                if(target.getHealth() <= 0){
-                    t[tileNo].removeZombie(target);
-                    System.out.printf("Zombie at lane %d tile %d died\n", (laneNo + 1), (tileNo + 1));
-                    
-                }
-                return true;
-            }
-
         return false;
+    }
+
+    public boolean inLastTile(){
+        return tileNo == PvZDriver.getMaxTiles();
     }
 
     public int getLaneNo(){
@@ -96,5 +76,12 @@ public class Projectile {
     }
     public int getTileNo(){
         return tileNo;
+    }
+
+    public double getPosition(){
+        return position;
+    }
+    public int getDamage(){
+        return damage;
     }
 }

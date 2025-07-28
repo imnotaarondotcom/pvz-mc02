@@ -5,14 +5,15 @@ public class Tile {
     
 
     /**
-     * creates a tile and initializes max number of projectiles and zombies it can contain
+     * creates a tile and initializes max number of projectiles, intializes the sun array, and zombies it can contain
      * and intializes its tile number
      * @param lane - lane Number of created tile
      * @param tile - tile number for the created tile
      */
     public Tile(int lane , int tile){
         zombies = new Zombie[MAX_ZOMBIES];
-   //     projectiles = new Projectile[MAX_PROJECTILES];
+        sun = new ArrayList<Sun>();
+ 
         projectiles = new ArrayList<Projectile>();
         TILE_NO = tile ;
         LANE_NO = lane ;
@@ -23,11 +24,14 @@ public class Tile {
     public void spawnZombie(int laneNo, int tileNo){
         if(TILE_NO == PvZDriver.getMaxTiles() - 1){
         Zombie z = new Zombie(laneNo, tileNo);
+        PvZDriver.printBorder();
         GameClock.printTime();
         placeZombie(z);
         System.out.println("Zombie Has Been Spawned at Lane No " + (LANE_NO + 1) + " Tile No " + (TILE_NO + 1) );
+        PvZDriver.printBorder();
         System.out.println(z.toString());
         }
+        
         else 
          System.out.println("Failed to spawn " );
     }
@@ -151,16 +155,6 @@ public class Tile {
         return zombies[highest];
     }
 
-
-
-    public int getTileNo(){
-        return TILE_NO;
-    }
-
-    public int getLaneNo(){
-        return LANE_NO;
-    }
-
     
     /**
      * returns array of zombies in the tile
@@ -177,6 +171,19 @@ public class Tile {
     public ArrayList<Projectile> getProjectiles(){
         return projectiles;
         
+    }
+
+    public void addSun(Sun sun){
+        this.sun.add(sun);
+    }
+
+    
+    /**
+     * checks if tile has zombies occupying it
+     * @return - true if there is at least one zombie
+     */
+    public boolean hasZombie(){
+        return noZombies() != 0;
     }
 
    
@@ -200,6 +207,17 @@ public class Tile {
         return TILE_LENGTH;
     }
 
+    public ArrayList<Sun> getSunList(){
+        return sun;
+    }
+
+    public int getLaneNo(){
+        return LANE_NO;
+    }
+    public int getTileNo(){
+        return TILE_NO;
+    }
+
     
 
     private final int LANE_NO;
@@ -210,5 +228,6 @@ public class Tile {
     private ArrayList<Projectile> projectiles;
     private final static int MAX_ZOMBIES = 10;
     private final static int MAX_PROJECTILES = 10;
+    private ArrayList<Sun> sun;
 
 }

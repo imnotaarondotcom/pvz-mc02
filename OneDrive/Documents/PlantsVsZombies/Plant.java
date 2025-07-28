@@ -3,9 +3,11 @@ public abstract class Plant {
     protected double speed; // time it takes to attack
     protected double cooldown; // regenerate rate
     protected double timeSinceLastAttack;
+    protected static double timeSinceLastPlant;
     protected int damage;
     protected int health;
     protected int directDamage;
+    protected int damageFalloff;
     protected int cost;
     protected String name;
     protected String type;
@@ -24,7 +26,7 @@ public abstract class Plant {
 
     }
 
-    public abstract void action(Tile t, ArrayList<Sun> sun);
+    public abstract void action(Tile t);
 
     /**
      * updates plants last attack time
@@ -41,31 +43,7 @@ public abstract class Plant {
      * @param sun - array of sun existing in the board (normally used for sunflowers)
      * @param tiles - tiles of the lane the plant is currently in 
      */
-    public void tryToAction(Tile t, double elapsedTime, ArrayList<Sun> sun, Tile[] tiles){
-        if(this instanceof Peashooter){
-            if(!(isLaneClear(tiles))){
-                updateTime(elapsedTime);
-                if(timeSinceLastAttack >= speed){
-                    //GameClock.printTime();
-                   // System.out.printf("%s has attacked at lane no %d tile no %d\n",name, laneNo + 1, tileNo + 1 );
-                    action(t, sun);
-                    timeSinceLastAttack = 0;
-                }
-            }
-                
-        }
-        else
-        if(this instanceof Sunflower){
-            updateTime(elapsedTime);
-                if(timeSinceLastAttack >= speed){
-                    GameClock.printTime();
-                    System.out.printf("%s has spawned sun at lane no %d tile no %d\n",name, laneNo + 1, tileNo + 1 );
-                    action(t, sun);
-                    timeSinceLastAttack = 0;
-                }
-        }
-        
-    }
+    public abstract void tryToAction(Tile t, double elapsedTime, Tile[] tiles);
 
     /**
      * allows the plant to take damage
@@ -92,6 +70,8 @@ public abstract class Plant {
 
         return true;
     }
+
+    
 
     public String getName(){
         return name;
