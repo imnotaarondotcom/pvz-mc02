@@ -1,11 +1,12 @@
-
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class defines the behavior and properties of a Peashooter plant in the game.
  * It is responsible for handling its attack logic, cooldowns, and interactions within the game environment.
  * @author Lim, Israel Sy
  * @author Enriquez, Aaron Mikael Cruz
- * @version 1.0
+ * @version 2.0
  * @since 2025-06-27
  */
 public class Peashooter extends Plant {
@@ -34,22 +35,27 @@ public class Peashooter extends Plant {
      * @param t Tile number for placement.
      */
     public Peashooter(int l, int t){
-        // Calls superclass constructor (Plant's name, speed, health, lane, tile)
-        super("peashooter", 1.425, 300, l ,t);
-     
+        super("peashooter", 1.425, 300, l ,t); // name, speed, health, lane, tile
+
         DAMAGE = 20;
         DIRECTDAMAGE = 10;
         DAMAGEFALLOFF = 1;
         updateState("idle");
     }
 
+    /**
+     * Attempts to perform the Peashooter's action (shooting) if its attack cooldown is ready
+     * and there are zombies in its lane.
+     * @param board Current game board.
+     * @param elapsedTime Time elapsed since last update.
+     */
     @Override
     public void tryToAction(Board board, double elapsedTime)
     {
         // Get tiles of current lane
         Tile[] lane = board.getSpecificLane(LANE_NO);
-        
-        // Attack if no zombies
+
+        // Attack if there are zombies in the lane
         if(!isLaneClear(lane))
         {
             updateTime(elapsedTime);
@@ -63,13 +69,13 @@ public class Peashooter extends Plant {
 
     /**
      * Executes the Peashooter's attack action: creates and places a projectile.
-     * @param b Current board of plant
+     * @param b Current board of plant.
      */
     @Override
     public void action(Board b){
         Tile t = b.getTile(LANE_NO, TILE_NO);
         t.placeProjectile(new Projectile(LANE_NO, TILE_NO , DAMAGE, DAMAGEFALLOFF, DIRECTDAMAGE));
-        updateState("idle"); // peashooter doesnt have an action animation
+        updateState("idle"); // Peashooter doesn't have a separate action animation, remains idle
     }
 
     /**
@@ -103,5 +109,4 @@ public class Peashooter extends Plant {
     public static void setTimeSinceLastPlant(double time){
         timeSinceLastPlant = time;
     }
-
 }

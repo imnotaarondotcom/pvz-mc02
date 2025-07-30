@@ -1,104 +1,224 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-public class PlantSelectionPanel extends JPanel{
-    
-    /**creates the selection panel for plants 
-     * 
-     * @param noBorders - no of borders in the plant selection panel
-     * @param topPanelWidth - width of the panel to be created
-     * @param topPanelHeight - length of the panel to be created
+/**
+ * Manages the top panel of the game UI, which includes the sun counter and
+ * buttons for selecting and planting various plant types. The available plants
+ * change based on the current game level.
+ *
+ * @author Lim, Israel Sy
+ * @author Enriquez, Aaron Mikael Cruz
+ * @version 1.0
+ * @since 2025-07-30
+ */
+public class PlantSelectionPanel extends JPanel
+{
+    /** Manages all game animations and images. */
+    private AnimationManager animations;
+    /** The height of this panel. */
+    private int panelHeight;
+    /** The width of this panel. */
+    private int panelWidth;
+    /** The number of border divisions for layout. */
+    private int noBorders;
+    /** Label displaying the current sun count. */
+    private JLabel sunCountLabel;
+    /** Panel containing the sun count label. */
+    private JPanel sunCountPanel;
+    /** Panel for displaying the sun icon and count. */
+    private JPanel sunDisplayPanel;
+    /** List of all {@link PlantButton} instances in this panel. */
+    private ArrayList<PlantButton> plantButtons;
+
+    /** Background image for the sun counter box. */
+    private BufferedImage sunboxImg;
+    /** Image for the borders around plant selection slots. */
+    private BufferedImage borderImg;
+
+    /**
+     * Constructs a new PlantSelectionPanel.
+     *
+     * @param animations The {@link AnimationManager} for loading images.
+     * @param topPanelWidth The total width of this panel.
+     * @param topPanelHeight The total height of this panel.
+     * @param noBorders The number of border divisions for layout.
+     * @param level The current game level, which determines available plants.
      */
-    public PlantSelectionPanel(int topPanelWidth , int topPanelHeight , int noBorders){
-        this.setLayout(null);
+    public PlantSelectionPanel(AnimationManager animations, int topPanelWidth, int topPanelHeight, int noBorders, int level)
+    {
+        this.setLayout(null); // Use absolute positioning
+        this.animations = animations;
+        this.noBorders = noBorders;
+        this.panelHeight = topPanelHeight;
+        this.panelWidth = topPanelWidth;
+        this.setPreferredSize(new Dimension(topPanelWidth, topPanelHeight));
 
+        // Load extra images
+        this.sunboxImg = animations.getImages("sunbox")[0];
+        this.borderImg = animations.getImages("border")[0];
 
+        // Sun counter setup
         sunCountPanel = new JPanel(new BorderLayout());
         sunDisplayPanel = new JPanel(new FlowLayout());
+        sunCountLabel = new JLabel();
+        sunCountLabel.setFont(new Font("Arial", Font.BOLD, 40));
+        sunDisplayPanel.add(sunCountLabel);
+        sunDisplayPanel.setOpaque(false); // Make transparent to show background image
 
         sunCountPanel.add(sunDisplayPanel, BorderLayout.SOUTH);
-        
-        sunCountPanel.setBounds(0 , 0 ,topPanelWidth / noBorders, topPanelHeight);
+        sunCountPanel.setBounds(0, 0, topPanelWidth / noBorders, topPanelHeight);
         sunCountPanel.setOpaque(false);
-        sunDisplayPanel.setOpaque(false);
 
-        sunCountLabel = new JLabel();
-        sunCountLabel.setFont(new Font("Calibri", Font.PLAIN, 20));
-
-
-        sunDisplayPanel.add(sunCountLabel); 
-
-        
         this.add(sunCountPanel);
 
-
-        this.noBorders = noBorders;
-
-        panelHeight = topPanelHeight;
-        panelWidth = topPanelWidth;
-        this.setPreferredSize(new Dimension(topPanelWidth,topPanelHeight));
-
-        animations = new AnimationManager();
-        animations.loadImages("borders" , "sunbox" , 1);
-        animations.loadImages("borders", "border" , 1);
-        animations.loadImages("icons", "peashooter_icon", 1);
-        animations.loadImages("icons", "sunflower_icon", 1);
-        animations.loadImages("icons", "cherrybomb_icon", 1);
+        // Plant buttons setup based on level
+        plantButtons = new ArrayList<>();
+        createPlantButtonsForLevel(level);
     }
+
+    /**
+     * Populates the panel with {@link PlantButton}s based on the current game level.
+     * Different plants become available at higher levels.
+     *
+     * @param level The current game level.
+     */
+    private void createPlantButtonsForLevel(int level)
+    {
+        ArrayList<String> plantsForLevel = new ArrayList<>();
+
+        // Always include these basic plants
+        plantsForLevel.add("sunflower_icon");
+        plantsForLevel.add("peashooter_icon");
+
+        if (level >= 2)
+        {
+            plantsForLevel.add("wallnut_icon");
+        }
+
+        if (level >= 3)
+        {
+            plantsForLevel.add("cherrybomb_icon");
+        }
+
+        // Always add shovel as the last button
+        plantsForLevel.add("shovel");
+
+        // Create buttons
+        for (int i = 0; i < plantsForLevel.size(); i++)
+        {
+            String iconName = plantsForLevel.get(i);
+            BufferedImage icon = animations.getImages(iconName)[0];
+            int plantCost = getPlantCost(iconName);
+            double plantCooldown = getPlantCooldown(iconName);
+
+            PlantButton btn = new PlantButton(icon, i + 1, plantCooldown, plantCost);
+            // Position buttons horizontally based on their index
+            btn.setBounds((panelWidth * (i + 1)) / noBorders, 0, panelWidth / noBorders, panelHeight);
+            btn.setOpaque(false);
+            this.add(btn);
+            plantButtons.add(btn);
+        }
+    }
+
+    /**
+     * Overrides the default {@code paintComponent} method to draw the background
+     * images for the sunbox and plant slot borders.
+     *
+     * @param g The {@link Graphics} context used for drawing.
+     */
     @Override
-    public void paintComponent(Graphics g){   
+    protected void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        // Draw sunbox background
+        g2.drawImage(sunboxImg, 0, 0, panelWidth / noBorders, panelHeight, null);
 
-        
-        BufferedImage sun = animations.getImages("sunbox")[0];
-        BufferedImage border = animations.getImages("border")[0];
-        ArrayList<BufferedImage> icons = new ArrayList<BufferedImage>();
-        icons.add(animations.getImages("peashooter_icon")[0]);
-        icons.add(animations.getImages("sunflower_icon")[0]);
-        icons.add(animations.getImages("cherrybomb_icon")[0]);
-
-        int i = 1;
-
-        g2.drawImage(sun, 0 , 0 , panelWidth / noBorders , panelHeight, null);
-
-        for(i = 1 ; i < 6; i++){
-            BufferedImage icon = null;
-
-            
-            
-
-            g2.drawImage(border, panelWidth * i / noBorders , 0 , panelWidth / noBorders , panelHeight , null);
-
-            if(i <= icons.size()){
-                icon = icons.get(i - 1);   
-                g2.drawImage(icon, panelWidth * i / noBorders , 0 , panelWidth / noBorders , panelHeight , null);    
-            }
-             
+        int i, x;
+        // Draw borders for each plant slot (index 0 reserved for sunbox)
+        for (i = 1; i <= 5; i++)
+        {
+            x = (panelWidth * i) / noBorders;
+            g2.drawImage(borderImg, x, 0, panelWidth / noBorders, panelHeight, null);
         }
-        
-
-   
     }
 
-    public void updateSunCount(int sunCount){
+    /**
+     * Updates the displayed sun count in the UI.
+     * @param sunCount The current total sun count.
+     */
+    public void updateSunCount(int sunCount)
+    {
         sunCountLabel.setText(Integer.toString(sunCount));
     }
-    private AnimationManager animations;
-    private int panelHeight;
-    private int panelWidth;
-    private int noBorders;
-    private JLabel sunCountLabel;
-    private JPanel sunCountPanel;
-    private JPanel sunDisplayPanel;
+
+    /**
+     * Resets the selection status of all plant buttons, unselecting any currently selected button.
+     */
+    public void resetSelectedButtons()
+    {
+        for (PlantButton pb : plantButtons)
+        {
+            pb.setIsSelected(false);
+        }
+    }
+
+    /**
+     * Retrieves the cooldown time for a specific plant type.
+     *
+     * @param p The name of the plant icon (e.g., "peashooter_icon").
+     * @return The cooldown time in seconds.
+     */
+    public double getPlantCooldown(String p)
+    {
+        switch (p)
+        {
+            case "peashooter_icon":
+                return Peashooter.getCooldown();
+            case "sunflower_icon":
+                return Sunflower.getCooldown();
+            case "wallnut_icon":
+                return Wallnut.getCooldown();
+            case "cherrybomb_icon":
+                return Cherrybomb.getCooldown();
+            default:
+                return 0; // Default for unrecognized plant or shovel
+        }
+    }
+
+    /**
+     * Retrieves the sun cost for a specific plant type.
+     *
+     * @param p The name of the plant icon (e.g., "peashooter_icon").
+     * @return The sun cost.
+     */
+    public int getPlantCost(String p)
+    {
+        switch (p)
+        {
+            case "peashooter_icon":
+                return Peashooter.getCost();
+            case "sunflower_icon":
+                return Sunflower.getCost();
+            case "wallnut_icon":
+                return Wallnut.getCost();
+            case "cherrybomb_icon":
+                return Cherrybomb.getCost();
+            default:
+                return 0; // Default for unrecognized plant or shovel
+        }
+    }
+
+    /**
+     * Retrieves the list of all {@link PlantButton}s managed by this panel.
+     * @return An {@link ArrayList} of {@link PlantButton} objects.
+     */
+    public ArrayList<PlantButton> getPlantButtons()
+    {
+        return plantButtons;
+    }
 }

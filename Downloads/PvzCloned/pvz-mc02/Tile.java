@@ -4,12 +4,12 @@ import java.util.ArrayList;
  * Represents a single tile on the game board in Plants vs. Zombies.
  * Each tile can contain a plant, multiple zombies, projectiles, and sun collectibles.
  * It manages the entities within its boundaries and facilitates their interactions.
+ *
  * @author Lim, Israel Sy
  * @author Enriquez, Aaron Mikael Cruz
- * @version 1.0
+ * @version 2.0
  * @since 2025-06-27
  */
-
 public class Tile {
     /** The lane index (row) of this tile. */
     private final int LANE_NO;
@@ -46,32 +46,38 @@ public class Tile {
     }
 
     /**
-     * Spawns a zombie on this tile if it's the farthest tile from the player's house.
-     * This method is typically called only for initial wave spawning.
-     * @param laneNo The lane number for the new zombie.
-     * @param tileNo The tile number for the new zombie.
+     * Spawns a zombie on this tile if it is the farthest tile in a lane (the rightmost tile).
+     * Prints a message to the console indicating successful or failed spawn.
+     *
+     * @param laneNo The lane number for the zombie.
+     * @param tileNo The tile number for the zombie.
+     * @param armor The {@link Armor} type for the spawned zombie.
      */
-    public void spawnZombie(int laneNo, int tileNo){
-        if(TILE_NO == PvZDriver.getMaxTiles() - 1){ // Check if this is the designated spawn tile
-
+    public void spawnZombie(int laneNo, int tileNo, Armor armor)
+    {
+        if(TILE_NO == PvZDriver.getMaxTiles() - 1) // if is at last tile
+        {
             // ZOMBIE TO BE SPAWNED
-            Zombie z = new Zombie(laneNo, tileNo, "flag");
-            
+            Zombie z = new Zombie(laneNo, tileNo, armor);
+
             GameClock.printTime();
             placeZombie(z);
             System.out.println("Zombie Has Been Spawned at Lane No " + (LANE_NO + 1) + " Tile No " + (TILE_NO + 1) );
             System.out.println(z.toString());
-        } else {
-            System.out.println("Failed to spawn - not the farthest tile.");
+        }
+        else
+        {
+            System.out.println("ERROR: Failed to spawn zombie - not the farthest tile.");
         }
     }
 
     /**
      * Places a plant on this tile if it is not already occupied.
      * @param p The plant to be placed.
-     * @return True if the plant is successfully placed, false otherwise.
+     * @return {@code true} if the plant is successfully placed, {@code false} otherwise.
      */
-    public boolean placePlant(Plant p){
+    public boolean placePlant(Plant p)
+    {
         if(placedPlant == null){
             GameClock.printTime();
             System.out.printf("%s placed at lane %d tile %d\n",p.getName(), (LANE_NO + 1),(TILE_NO + 1));
@@ -88,7 +94,7 @@ public class Tile {
     public void placeZombie(Zombie z){
         zombies.add(z);
     }
-    
+
     /**
      * Places a projectile into this tile's list of active projectiles.
      * @param p The projectile to be placed.
@@ -107,6 +113,7 @@ public class Tile {
 
     /**
      * Removes the plant currently occupying this tile.
+     * Prints a message to the console indicating the plant was removed.
      */
     public void removePlant(){
         if (placedPlant != null) {
@@ -121,34 +128,36 @@ public class Tile {
      * @return The number of zombies in the tile.
      */
     public int noZombies(){
-        return zombies.size(); // Use ArrayList's size method for conciseness
+        return zombies.size();
     }
 
     /**
      * Returns the zombie with the "highest" (i.e., furthest left, closest to the house) position within this tile.
      * This is useful for determining which zombie a plant should target first.
-     * @return The zombie with the highest position, or null if no zombies are present.
+     * @return The zombie with the highest position, or {@code null} if no zombies are present.
      */
     public Zombie highestPosition()
     {
-        if (zombies.isEmpty()) // Check if the list is empty first
-        { 
+        if (zombies.isEmpty())
+        {
             return null;
         }
-        
+
         Zombie highestZombie = null;
         // Zombies move from right to left, so a lower position value means closer to the house (further left).
-        double minPosition = Double.MAX_VALUE; 
+        double minPosition = Double.MAX_VALUE;
 
-        for(Zombie z : zombies){ // Enhanced for-loop for readability
-            if(z.getPosition() < minPosition){
+        for(Zombie z : zombies)
+        {
+            if(z.getPosition() < minPosition)
+            {
                 minPosition = z.getPosition();
                 highestZombie = z;
             }
         }
         return highestZombie;
     }
-    
+
     /**
      * Returns the list containing all zombies on this tile.
      * @return An {@link ArrayList} of {@link Zombie} objects.
@@ -172,22 +181,22 @@ public class Tile {
     public void addSun(Sun sun){
         this.sun.add(sun);
     }
-    
+
     /**
      * Checks if this tile has any zombies occupying it.
-     * @return True if there is at least one zombie, false otherwise.
+     * @return {@code true} if there is at least one zombie, {@code false} otherwise.
      */
     public boolean hasZombie(){
-        return !zombies.isEmpty(); // Concise check if ArrayList is not empty
+        return !zombies.isEmpty();
     }
 
     /**
      * Returns the plant currently occupying this tile.
-     * @return The {@link Plant} object, or null if no plant is occupying the tile.
+     * @return The {@link Plant} object, or {@code null} if no plant is occupying the tile.
      */
     public Plant getPlant(){
         return placedPlant;
-    } 
+    }
 
     /**
      * Returns the conceptual length of a single tile, used for game world measurements.

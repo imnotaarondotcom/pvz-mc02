@@ -1,39 +1,23 @@
-/**
- * This class is the main driver for the Plants vs. Zombies simulation game.
- * It initializes the game board, manages the primary game loop, handles the spawning
- * of zombies and sun, updates the state of all game entities, and determines
- * win/loss conditions.
- * @author Lim, Israel Sy
- * @author Enriquez, Aaron Mikael Cruz
- * @version 1.0
- * @since 2025-06-27
- */
 import java.util.*;
 import javax.swing.*;
 import java.time.Duration;
 import java.time.Instant;
 
-public class PvZDriver {
-    /** A shared Random instance for generating random numbers, e.g., for zombie and sun spawning. */
-    private final Random tilePicker;
+/**
+ * This class is the main driver for the Plants vs. Zombies simulation game.
+ * @author Lim, Israel Sy
+ * @author Enriquez, Aaron Mikael Cruz
+ * @version 2.0
+ * @since 2025-06-27
+ */
 
-    /** Current game level, influencing zombie spawning. */
-    private static int level = 1 ;
-
+public class PvZDriver 
+{
     /** Maximum number of lanes on the game board. */
     private static final int MAX_LANES = 5;
 
     /** Maximum number of tiles per lane on the game board. */
     private static final int MAX_TILES = 9;
-
-    /**
-     * Constructs a new PvZDriver instance.
-     * Initializes the random number generator used for various game mechanics.
-     */
-    public PvZDriver() {
-        this.tilePicker = new Random();
-        
-    }
 
     /**
      * Returns the maximum number of lanes on the game board.
@@ -53,23 +37,16 @@ public class PvZDriver {
         return MAX_TILES;
     }
 
-    /**
-     * Returns the current game level.
-     * @return The current game level.
-     */
-    public static int getLevel()
-    {
-        return level;
-    }
 
     /**
      * The main method to start and run the Plants vs. Zombies game simulation.
      * @param args Command line arguments (not used).
      */
-    public static void main(String[] args){
-        Gui gui = new Gui();      
-        Board board = new Board(5,9); // remember to change
+    public static void main(String[] args)
+    {
+        Gui gui = new Gui();
+        Board board = new Board(MAX_LANES, MAX_TILES);
         Controller controller = new Controller(gui, board);
-        controller.start();
+        controller.goMainMenu();
     }
 }

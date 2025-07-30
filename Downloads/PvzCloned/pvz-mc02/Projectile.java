@@ -3,10 +3,9 @@
  * It manages the projectile's movement, damage calculation, and interaction with game elements.
  * @author Lim, Israel Sy
  * @author Enriquez, Aaron Mikael Cruz
- * @version 1.0
+ * @version 2.0
  * @since 2025-06-27
  */
-
 public class Projectile {
     /** The base damage of the projectile. */
     private final int DAMAGE;
@@ -23,6 +22,7 @@ public class Projectile {
     /** The current position of the projectile within its current tile (0.0 to Tile.getTileLength()). */
     private double position;
 
+    /** The vertical (Y) offset of the projectile above its tile. */
     private double positionY;
 
     /** The current tile index (column) the projectile occupies. */
@@ -33,10 +33,13 @@ public class Projectile {
 
     /** The number of tiles the projectile has traveled since being fired. */
     private int tilesTravelled;
-    
+
+    /** The type of the projectile (e.g., "pea"). */
     private String type;
+    /** The current state of the projectile (e.g., "idle"). */
     private String state;
 
+    /** The visual size or scale of the projectile. */
     private double size;
 
     /**
@@ -51,7 +54,7 @@ public class Projectile {
         positionY = 0.25;
         size = 0.25;
         DAMAGE = d;
-        position = 0.8; // Projectiles start at the beginning of their tile
+        position = 0.8; // Projectiles start in front of plant
         SPEED = 4.5; // Fixed speed of 2 tiles per second
         tileNo = t;
         laneNo = l;
@@ -105,14 +108,21 @@ public class Projectile {
         return false;
     }
 
+    /**
+     * Checks if the projectile has hit a zombie on the given tile.
+     * If a hit occurs, applies damage to the zombie.
+     * @param t The {@link Tile} to check for zombies.
+     * @return {@code true} if the projectile hit a zombie; {@code false} otherwise.
+     */
     public boolean hasHitZombie(Tile t){
         Zombie zombie = t.highestPosition();
-        if(getPosition()  >=  zombie.getPosition() - 0.3  ){ 
+        if(getPosition() >= zombie.getPosition() - 0.3){
             hit(zombie);
             return true;
         }
         return false;
     }
+
     /**
      * Checks if the projectile is currently in the last tile of the game board.
      * @return True if the projectile is in the last tile, false otherwise.
@@ -153,18 +163,34 @@ public class Projectile {
         return DAMAGE;
     }
 
+    /**
+     * Returns the current state of the projectile.
+     * @return The projectile's state.
+     */
     public String getState(){
         return state;
     }
 
+    /**
+     * Returns the type of the projectile.
+     * @return The projectile's type.
+     */
     public String getType(){
         return type;
     }
 
+    /**
+     * Returns the visual size or scale of the projectile.
+     * @return The projectile's size.
+     */
     public double getSize(){
         return size;
     }
 
+    /**
+     * Returns the vertical (Y) offset of the projectile.
+     * @return The projectile's Y-offset.
+     */
     public double getPositionY(){
         return positionY;
     }

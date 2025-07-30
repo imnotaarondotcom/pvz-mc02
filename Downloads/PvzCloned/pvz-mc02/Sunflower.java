@@ -1,11 +1,9 @@
-import java.util.ArrayList;
-
 /**
  * This class defines the behavior and properties of a Sunflower plant in the game.
  * It is responsible for handling its sun production logic, cooldowns, and interactions within the game environment.
  * @author Lim, Israel Sy
  * @author Enriquez, Aaron Mikael Cruz
- * @version 1.0
+ * @version 2.0
  * @since 2025-06-27
  */
 
@@ -18,7 +16,7 @@ public class Sunflower extends Plant {
     private static final double COOLDOWN = 7.5;
 
     /** Timestamp of the last Sunflower planted, for cooldown tracking. */
-    private static double timeSinceLastPlant = -7.5;
+    private static double timeSinceLastPlant = -COOLDOWN;
 
     /**
      * Constructs a Sunflower.
